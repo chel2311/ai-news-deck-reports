@@ -173,7 +173,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tbody>
 <tr><td><span class="req-id">FR-20</span></td><td>GitHub Pagesへ自動push（HTMLレポート公開）</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-21</span></td><td>Notionデータベースへ自動投稿（プロパティ: 日付、企業、カテゴリ、件数、重要度、要約）</td><td class="req-priority-high">高</td><td>完了</td></tr>
-<tr><td><span class="req-id">FR-22</span></td><td>NotionへPPTXファイル添付・カバー画像アップロード（ギャラリービュー対応）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-22</span></td><td>NotionへPPTXをDBプロパティ「PPTX」に添付・カバー画像アップロード（ギャラリービュー対応）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-23</span></td><td>GitHub PagesレポートURLをNotionプロパティに自動設定</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 </tbody>
 </table>
@@ -194,6 +194,8 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><span class="req-id">FR-39</span></td><td>Notionスキーマ自動修復: DBプロパティ名の変更を自動検知し、タイプベースマッチングでマッピング生成</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-40</span></td><td>インフラ深掘り分析: 資金調達ニュースの裏側にあるGPU需要・データセンター・電力消費を構造的に考察</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-41</span></td><td>Notionサムネイル v3: Pillow(PIL)ベース、白背景1200x630px、トップ3ニュース+KPI+企業色凡例。テキスト自動折り返し対応</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-42</span></td><td>Notion記事構造改善: heading_1/2/3階層、各ニュースtoggle化、空白余白、ソースtoggle収納、PPTXをDBプロパティ「PPTX」に移動</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-43</span></td><td>規格/プロトコル一覧を発表日降順（最新が上）でソート。HTML・PPTX・Notion全出力に適用</td><td class="req-priority-low">低</td><td>完了</td></tr>
 </tbody>
 </table>
 
@@ -624,9 +626,9 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div class="accordion-body">
 <table class="table table-sm spec-table">
 <tr><th style="width:140px">DB管理</th><td><code>ensure_database()</code> - "AI News Daily Deck"データベースを検索/作成。<code>tuple[str, dict]</code>を返し、プロパティ名マッピングを含む。<code>_resolve_property_mapping()</code>でスキーマ差異を自動修復（Phase 1: 名前完全一致 → Phase 2: タイプベース推定）</td></tr>
-<tr><th>ファイルアップロード</th><td>3ステップ: File Uploadオブジェクト作成 → バイナリ送信 → ページ添付。PPTX + カバー画像を添付</td></tr>
+<tr><th>ファイルアップロード</th><td>3ステップ: File Uploadオブジェクト作成 → バイナリ送信 → DBプロパティ添付。PPTXは「PPTX」filesプロパティに格納、カバー画像は「サムネイル」プロパティに添付</td></tr>
 <tr><th>カバー画像</th><td><code>generate_cover_image()</code> - Pillow(PIL)で白背景1200x630pxのサムネイルPNG生成。トップ3ニュース（自動折り返し）、KPI 4個、企業色凡例付き</td></tr>
-<tr><th>ブロック構築</th><td>目次、コールアウト、見出し、テーブル、トグル、ブックマーク、引用等のNotionブロックをプログラマティックに生成。100件ずつバッチ投稿</td></tr>
+<tr><th>ブロック構築</th><td>heading_1/2/3階層、toggle（各ニュース個別）、空白余白、callout、テーブル、ブックマーク、引用等をプログラマティックに生成。ソース一覧はtoggle内収納。100件ずつバッチ投稿</td></tr>
 <tr><th>図解レンダリング</th><td>6種類のdiagram_dataをNotion互換ブロック（テキストバー、テーブル、箇条書き等）に変換</td></tr>
 </table>
 </div>
@@ -822,7 +824,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 
   <div class="wf-step">
     <div class="step-label">ページ構築・投稿</div>
-    <div class="step-desc">DBプロパティ設定 (日付,企業,カテゴリ,件数,重要度,要約...)<br>ブロック生成 (目次, サマリー, ファイル, KT, ハイライト, ニュース全件, 企業比較, 世界/日本, ソース)<br>100件ずつバッチ投稿</div>
+    <div class="step-desc">DBプロパティ設定 (日付,企業,カテゴリ,件数,重要度,要約,PPTX...)<br>ブロック生成 (heading_1タイトル, サマリー, KT, ハイライト直接展開, ニュースtoggle, 企業比較, 世界/日本, レポートファイル, ソースtoggle)<br>100件ずつバッチ投稿</div>
   </div>
   <div class="wf-arrow"></div>
 

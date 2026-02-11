@@ -157,7 +157,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <table class="table table-bordered spec-table">
 <thead><tr><th>ID</th><th>要件</th><th>優先度</th><th>実装状態</th></tr></thead>
 <tbody>
-<tr><td><span class="req-id">FR-10</span></td><td>HTMLレポート: Bootstrap 5ベース、タブUI（6セクション）、レスポンシブ対応</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-10</span></td><td>HTMLレポート: Bootstrap 5ベース、タブUI（6セクション）、4段階レスポンシブ対応（モバイル/タブレット/PC/ワイドPC）。コンテナ幅96%流動レイアウト、タブ横スクロール、テーブル横スクロール</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-11</span></td><td>インタラクティブチャート: Plotly（企業別棒グラフ、カテゴリレーダー、ヒートマップ、ドーナツ、ツリーマップ、バブル）</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-12</span></td><td>記事ごとの図解レンダリング（比較表、フローステップ、メトリクス、賛否、バー、タイムライン）</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-13</span></td><td>PPTX v3.2: 7色パレット、テーブル（企業比較・プロトコル一覧）、フロー図形、2カラムレイアウト、diagram PNG埋込、2x2ダッシュボード。8-12枚構成</td><td class="req-priority-mid">中</td><td>完了</td></tr>
@@ -200,7 +200,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><span class="req-id">NF-01</span></td><td>コスト</td><td>月額運用コスト</td><td>Claude Code Proサブスク範囲内（追加API費用$0）</td></tr>
 <tr><td><span class="req-id">NF-02</span></td><td>コスト</td><td>1回あたりのclaude -p予算上限</td><td>ニュース収集: $5.00 / 比較データ更新: $2.00</td></tr>
 <tr><td><span class="req-id">NF-03</span></td><td>API使用量</td><td>Brave Search: 月2,000回以内 / Tavily: 月1,000回以内</td><td>警告閾値: Brave 1,500回 / Tavily 800回</td></tr>
-<tr><td><span class="req-id">NF-04</span></td><td>レスポンシブ</td><td>スマホ(375px)からPC(1440px)まで閲覧可能</td><td>Bootstrap 5グリッド + カスタムCSS</td></tr>
+<tr><td><span class="req-id">NF-04</span></td><td>レスポンシブ</td><td>スマホ(375px)からワイドPC(1920px+)まで最適表示。4段階ブレークポイント: モバイル(&lt;576px) / タブレット(576-1024px) / PC(1025-1599px) / ワイドPC(1600px+)</td><td>Bootstrap 5 + カスタムCSS 4段階レスポンシブ。コンテナ幅96%流動、タブ横スクロール</td></tr>
 <tr><td><span class="req-id">NF-05</span></td><td>信頼性</td><td>各生成ステップが独立して失敗可能</td><td>部分的成功でもレポート出力</td></tr>
 <tr><td><span class="req-id">NF-06</span></td><td>著作権</td><td>全ニュースに引用元URL・ソース名を必須付与</td><td>100%</td></tr>
 <tr><td><span class="req-id">NF-07</span></td><td>データ鮮度</td><td>ニュース: 24-48時間以内 / 比較データ: 1週間以内</td><td>毎日/毎週月曜更新</td></tr>

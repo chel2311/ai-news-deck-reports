@@ -1561,20 +1561,43 @@ body {
 }
 
 /* ================================================
-   レスポンシブ
+   タブスクロールラッパー（モバイル用）
    ================================================ */
-@media (max-width: 768px) {
+.tabs-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.tabs-scroll-wrapper::-webkit-scrollbar { display: none; }
+.tabs-scroll-wrapper .nav-tabs { flex-wrap: nowrap; white-space: nowrap; }
+
+/* ================================================
+   テーブルスクロールラッパー
+   ================================================ */
+.table-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-sm);
+}
+
+/* ================================================
+   レスポンシブ（4段階ブレークポイント）
+   ================================================ */
+
+/* --- モバイル (< 576px) --- */
+@media (max-width: 575.98px) {
     .deck-header {
-        padding: 1.5rem 1rem;
+        padding: 1.2rem 0.75rem;
     }
 
     .deck-header h1 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
 
     .nav-tabs .nav-link {
         padding: 0.5rem 0.75rem;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
     }
 
     .highlight-card {
@@ -1582,11 +1605,11 @@ body {
     }
 
     .highlight-card h2 {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
 
     .news-card {
-        padding: 1rem;
+        padding: 0.85rem;
     }
 
     .article-visual-layout {
@@ -1618,29 +1641,25 @@ body {
     .ring-middle { width: 80px; height: 80px; top: 20px; left: 20px; }
     .ring-inner { width: 44px; height: 44px; top: 38px; left: 38px; }
 
-    .stat-cards-row {
-        flex-direction: row;
-    }
-
     .chart-container {
         padding: 0.75rem;
     }
 
     .diagram-container {
-        padding: 1rem;
+        padding: 0.85rem;
     }
 
     .comparison-table, .landscape-table {
-        font-size: 0.78rem;
+        font-size: 0.75rem;
     }
 
     .comparison-table thead th,
     .comparison-table tbody td {
-        padding: 0.4rem 0.5rem;
+        padding: 0.35rem 0.4rem;
     }
 
     .flow-item {
-        gap: 0.6rem;
+        gap: 0.5rem;
     }
 
     .rel-nodes {
@@ -1648,19 +1667,18 @@ body {
     }
 
     .executive-summary {
-        padding: 1rem;
+        padding: 0.85rem;
         font-size: 0.88rem;
     }
 
     .competitor-comparison {
-        padding: 0.65rem;
+        padding: 0.5rem;
     }
 
     .mini-timeline {
         padding-left: 1.2rem;
     }
 
-    /* 図解レスポンシブ */
     .flow-steps-row {
         flex-direction: column;
         gap: 0;
@@ -1681,6 +1699,55 @@ body {
 
     .metrics-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sources-section ul {
+        columns: 1;
+    }
+}
+
+/* --- タブレット (576px - 1024px) --- */
+@media (min-width: 576px) and (max-width: 1024px) {
+    .deck-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .nav-tabs .nav-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .article-visual-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .article-side-visual {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .article-side-visual > * {
+        flex: 1;
+        min-width: 140px;
+    }
+
+    .sources-section ul {
+        columns: 2;
+    }
+}
+
+/* --- PC (1025px - 1599px) --- */
+@media (min-width: 1025px) and (max-width: 1599px) {
+    .sources-section ul {
+        columns: 2;
+    }
+}
+
+/* --- ワイドPC (>= 1600px) --- */
+@media (min-width: 1600px) {
+    .sources-section ul {
+        columns: 3;
     }
 }
 
@@ -1711,7 +1778,7 @@ body {
     </style>
 </head>
 <body>
-    <div class="container-fluid" style="max-width: 960px; margin: 0 auto;">
+    <div class="container-fluid" style="max-width: 96%; margin: 0 auto;">
 
         <!-- ヘッダー -->
         <div class="deck-header">
@@ -1727,6 +1794,7 @@ body {
         
 
         <!-- タブナビゲーション -->
+        <div class="tabs-scroll-wrapper">
         <ul class="nav nav-tabs" id="mainTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="overview-tab" data-bs-toggle="tab"
@@ -1753,6 +1821,7 @@ body {
                         data-bs-target="#charts" type="button" role="tab">データ</button>
             </li>
         </ul>
+        </div>
 
         <div class="tab-content" id="mainTabContent">
 
@@ -5628,7 +5697,7 @@ body {
                 
                 <div class="chart-container">
                     <h4 style="font-size: 1rem; font-weight: 700; color: var(--corporate-color); margin-bottom: 0.75rem;">分野別トレンド</h4>
-                    <div>                            <div id="ef435e4d-27f3-4997-9c95-56f44b51ce01" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("ef435e4d-27f3-4997-9c95-56f44b51ce01")) {                    Plotly.newPlot(                        "ef435e4d-27f3-4997-9c95-56f44b51ce01",                        [{"fill":"toself","fillcolor":"rgba(0, 91, 171, 0.15)","hovertemplate":"%{theta}: %{r}\u4ef6\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#005BAB","width":3},"marker":{"color":"#005BAB","size":10},"r":[4,6,1,4],"theta":["LLM","Business","Policy","LLM"],"type":"scatterpolar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"font":{"family":"Meiryo, 'Hiragino Sans', sans-serif"},"margin":{"t":50,"b":40,"l":50,"r":20},"title":{"font":{"size":16},"text":"\u003cb\u003e\u5206\u91ce\u5225\u30cb\u30e5\u30fc\u30b9\u30c8\u30ec\u30f3\u30c9\u003c\u002fb\u003e"},"polar":{"radialaxis":{"visible":true,"gridcolor":"#E5E5E5","range":[0,7]},"angularaxis":{"gridcolor":"#E5E5E5"}},"plot_bgcolor":"white","paper_bgcolor":"white","height":400},                        {"responsive": true}                    )                };            </script>        </div>
+                    <div>                            <div id="f875f3d3-7079-474f-9c98-6530739941fd" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("f875f3d3-7079-474f-9c98-6530739941fd")) {                    Plotly.newPlot(                        "f875f3d3-7079-474f-9c98-6530739941fd",                        [{"fill":"toself","fillcolor":"rgba(0, 91, 171, 0.15)","hovertemplate":"%{theta}: %{r}\u4ef6\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#005BAB","width":3},"marker":{"color":"#005BAB","size":10},"r":[4,6,1,4],"theta":["LLM","Business","Policy","LLM"],"type":"scatterpolar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"font":{"family":"Meiryo, 'Hiragino Sans', sans-serif"},"margin":{"t":50,"b":40,"l":50,"r":20},"title":{"font":{"size":16},"text":"\u003cb\u003e\u5206\u91ce\u5225\u30cb\u30e5\u30fc\u30b9\u30c8\u30ec\u30f3\u30c9\u003c\u002fb\u003e"},"polar":{"radialaxis":{"visible":true,"gridcolor":"#E5E5E5","range":[0,7]},"angularaxis":{"gridcolor":"#E5E5E5"}},"plot_bgcolor":"white","paper_bgcolor":"white","height":400},                        {"responsive": true}                    )                };            </script>        </div>
                 </div>
                 
             </div>
@@ -6409,6 +6478,116 @@ body {
                 </div>
                 
 
+                <!-- AI業界標準規格/プロトコル一覧 -->
+                
+                <h3 class="cmp-section-title" style="margin-top:2rem;">AI業界標準規格 / プロトコル一覧</h3>
+                <div style="overflow-x:auto;">
+                    <table class="cmp-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left; min-width:100px;">略称</th>
+                                <th style="text-align:left; min-width:160px;">正式名称</th>
+                                <th style="min-width:100px;">発表元</th>
+                                <th style="min-width:80px;">発表日</th>
+                                <th style="min-width:90px;">レイヤー</th>
+                                <th style="text-align:left; min-width:250px;">概要</th>
+                                <th style="min-width:80px;">ステータス</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr>
+                                <td style="text-align:left;">
+                                    <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener" style="color:#005BAB; font-weight:700; text-decoration:none;">MCP</a>
+                                </td>
+                                <td style="text-align:left; font-size:0.78rem;">Model Context Protocol</td>
+                                <td>Anthropic</td>
+                                <td>2024-11</td>
+                                <td><span class="cmp-tag" style="background:#E8F1F8; color:#005BAB;">Agent-Tool</span></td>
+                                <td style="text-align:left; font-size:0.78rem;">AIモデルを外部データソース・ツールに接続するオープン標準。10,000以上のMCPサーバーが公開済み。OpenAI・Google・Microsoft等が採用。</td>
+                                <td style="font-size:0.72rem;">確立済み / Linux Foundation (AAIF) 傘下</td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="text-align:left;">
+                                    <a href="https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/" target="_blank" rel="noopener" style="color:#005BAB; font-weight:700; text-decoration:none;">A2A</a>
+                                </td>
+                                <td style="text-align:left; font-size:0.78rem;">Agent2Agent Protocol</td>
+                                <td>Google Cloud</td>
+                                <td>2025-04</td>
+                                <td><span class="cmp-tag" style="background:#E8F1F8; color:#005BAB;">Agent-Agent</span></td>
+                                <td style="text-align:left; font-size:0.78rem;">異なるプラットフォーム・ベンダー間でAIエージェント同士が通信・協働するオープンプロトコル。MCPの補完的位置づけ。</td>
+                                <td style="font-size:0.72rem;">Linux Foundation傘下で開発中 / IBM ACP統合済み</td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="text-align:left;">
+                                    <a href="https://agentskills.io/specification" target="_blank" rel="noopener" style="color:#005BAB; font-weight:700; text-decoration:none;">Agent Skills</a>
+                                </td>
+                                <td style="text-align:left; font-size:0.78rem;">Agent Skills</td>
+                                <td>Anthropic</td>
+                                <td>2025-12</td>
+                                <td><span class="cmp-tag" style="background:#E8F1F8; color:#005BAB;">Agent Capability</span></td>
+                                <td style="text-align:left; font-size:0.78rem;">AIエージェントに再現可能なワークフローを教えるオープン標準。SKILL.mdベースのプログレッシブ・ディスクロージャー方式。Microsoft・OpenAI等が採用。</td>
+                                <td style="font-size:0.72rem;">オープンスタンダード公開済み</td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="text-align:left;">
+                                    <a href="https://developers.google.com/merchant/ucp" target="_blank" rel="noopener" style="color:#005BAB; font-weight:700; text-decoration:none;">UCP</a>
+                                </td>
+                                <td style="text-align:left; font-size:0.78rem;">Universal Commerce Protocol</td>
+                                <td>Google</td>
+                                <td>2026-01</td>
+                                <td><span class="cmp-tag" style="background:#E8F1F8; color:#005BAB;">Commerce</span></td>
+                                <td style="text-align:left; font-size:0.78rem;">AIエージェント経由の商取引を標準化。A2A・MCP・AP2を統合オーケストレーションする上位プロトコル。Shopify・Walmart等が支持。</td>
+                                <td style="font-size:0.72rem;">オープンソース公開済み / 20以上のパートナー</td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="text-align:left;">
+                                    <a href="https://www.agenticcommerce.dev/" target="_blank" rel="noopener" style="color:#005BAB; font-weight:700; text-decoration:none;">ACP</a>
+                                </td>
+                                <td style="text-align:left; font-size:0.78rem;">Agentic Commerce Protocol</td>
+                                <td>OpenAI + Stripe</td>
+                                <td>2025-09</td>
+                                <td><span class="cmp-tag" style="background:#E8F1F8; color:#005BAB;">Commerce</span></td>
+                                <td style="text-align:left; font-size:0.78rem;">AIエージェント経由の商取引フローを実現するオープン標準。物理/デジタル商品、サブスクリプション対応。ChatGPTで実装済み。</td>
+                                <td style="font-size:0.72rem;">オープンソース (Apache 2.0)</td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="text-align:left;">
+                                    <a href="https://github.com/openai/agents-md" target="_blank" rel="noopener" style="color:#005BAB; font-weight:700; text-decoration:none;">AGENTS.md</a>
+                                </td>
+                                <td style="text-align:left; font-size:0.78rem;">AGENTS.md</td>
+                                <td>OpenAI</td>
+                                <td>2025-08</td>
+                                <td><span class="cmp-tag" style="background:#E8F1F8; color:#005BAB;">Project Instruction</span></td>
+                                <td style="text-align:left; font-size:0.78rem;">AIコーディングエージェントにプロジェクト固有のガイダンスを提供するMarkdownベース規約。Copilot・Cursor・Gemini CLI等が対応。</td>
+                                <td style="font-size:0.72rem;">AAIF寄贈済み / 60,000+プロジェクトが採用</td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="text-align:left;">
+                                    <a href="https://agent-network-protocol.com/" target="_blank" rel="noopener" style="color:#005BAB; font-weight:700; text-decoration:none;">ANP</a>
+                                </td>
+                                <td style="text-align:left; font-size:0.78rem;">Agent Network Protocol</td>
+                                <td>ANP Community (中国移動/Huawei等)</td>
+                                <td>2025-10</td>
+                                <td><span class="cmp-tag" style="background:#E8F1F8; color:#005BAB;">Network Discovery</span></td>
+                                <td style="text-align:left; font-size:0.78rem;">数十億のエージェントのためのネットワークプロトコル。W3C DIDによるID認証、JSON-LDによる能力公開の3層アーキテクチャ。</td>
+                                <td style="font-size:0.72rem;">IETF標準化プロセス進行中</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+                <div class="cmp-note" style="margin-top:0.5rem; font-size:0.72rem; color:#6C757D;">
+                    ※ この一覧はキャッチアップ時に自動更新されます。情報は各公式サイトでご確認ください。
+                </div>
+                
+
                 <!-- データソース -->
                 
                 <div class="cmp-note" style="margin-top:1rem;">
@@ -6455,13 +6634,19 @@ body {
             
                 <li>
                     
-                    <a href="https://www.cnn.com/2026/02/05/tech/anthropic-opus-update-software-stocks" target="_blank" rel="noopener">CNN Business - https://www.cnn.com/2026/02/05/tech/anthropic-opus-update-software-stocks</a>
+                    <a href="https://llm-stats.com/llm-updates" target="_blank" rel="noopener">LLM Stats - https://llm-stats.com/llm-updates</a>
                     
                 </li>
             
                 <li>
                     
-                    <a href="https://www.technologyreview.com/2026/01/12/1130027/generative-coding-ai-software-2026-breakthrough-technology" target="_blank" rel="noopener">MIT Technology Review - https://www.technologyreview.com/2026/01/12/1130027/generative-coding-ai-software-2026-breakthrough-technology</a>
+                    <a href="https://techstartups.com/2026/02/05/top-startup-and-tech-funding-news-february-5-2025/" target="_blank" rel="noopener">Tech Startups - https://techstartups.com/2026/02/05/top-startup-and-tech-funding-news-february-5-2025/</a>
+                    
+                </li>
+            
+                <li>
+                    
+                    <a href="https://www.technologyreview.com/2026/01/05/1130662/whats-next-for-ai-in-2026/" target="_blank" rel="noopener">MIT Technology Review - https://www.technologyreview.com/2026/01/05/1130662/whats-next-for-ai-in-2026/</a>
                     
                 </li>
             
@@ -6479,31 +6664,25 @@ body {
             
                 <li>
                     
-                    <a href="https://techstartups.com/2026/02/05/top-startup-and-tech-funding-news-february-5-2025/" target="_blank" rel="noopener">Tech Startups - https://techstartups.com/2026/02/05/top-startup-and-tech-funding-news-february-5-2025/</a>
-                    
-                </li>
-            
-                <li>
-                    
-                    <a href="https://llm-stats.com/llm-updates" target="_blank" rel="noopener">LLM Stats - https://llm-stats.com/llm-updates</a>
-                    
-                </li>
-            
-                <li>
-                    
                     <a href="https://natlawreview.com/article/2026-outlook-artificial-intelligence" target="_blank" rel="noopener">National Law Review - https://natlawreview.com/article/2026-outlook-artificial-intelligence</a>
                     
                 </li>
             
                 <li>
                     
-                    <a href="https://www.technologyreview.com/2026/01/05/1130662/whats-next-for-ai-in-2026/" target="_blank" rel="noopener">MIT Technology Review - https://www.technologyreview.com/2026/01/05/1130662/whats-next-for-ai-in-2026/</a>
+                    <a href="https://techcrunch.com/2026/02/05/openai-launches-new-agentic-coding-model-only-minutes-after-anthropic-drops-its-own/" target="_blank" rel="noopener">TechCrunch - https://techcrunch.com/2026/02/05/openai-launches-new-agentic-coding-model-only-minutes-after-anthropic-drops-its-own/</a>
                     
                 </li>
             
                 <li>
                     
-                    <a href="https://techcrunch.com/2026/02/05/openai-launches-new-agentic-coding-model-only-minutes-after-anthropic-drops-its-own/" target="_blank" rel="noopener">TechCrunch - https://techcrunch.com/2026/02/05/openai-launches-new-agentic-coding-model-only-minutes-after-anthropic-drops-its-own/</a>
+                    <a href="https://www.cnn.com/2026/02/05/tech/anthropic-opus-update-software-stocks" target="_blank" rel="noopener">CNN Business - https://www.cnn.com/2026/02/05/tech/anthropic-opus-update-software-stocks</a>
+                    
+                </li>
+            
+                <li>
+                    
+                    <a href="https://www.technologyreview.com/2026/01/12/1130027/generative-coding-ai-software-2026-breakthrough-technology" target="_blank" rel="noopener">MIT Technology Review - https://www.technologyreview.com/2026/01/12/1130027/generative-coding-ai-software-2026-breakthrough-technology</a>
                     
                 </li>
             

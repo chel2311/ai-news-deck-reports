@@ -160,7 +160,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><span class="req-id">FR-10</span></td><td>HTMLレポート: Bootstrap 5ベース、タブUI（6セクション）、レスポンシブ対応</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-11</span></td><td>インタラクティブチャート: Plotly（企業別棒グラフ、カテゴリレーダー、ヒートマップ、ドーナツ、ツリーマップ、バブル）</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-12</span></td><td>記事ごとの図解レンダリング（比較表、フローステップ、メトリクス、賛否、バー、タイムライン）</td><td class="req-priority-high">高</td><td>完了</td></tr>
-<tr><td><span class="req-id">FR-13</span></td><td>PPTXスライド: テンプレートベース生成（表紙、ハイライト、企業別、日本市場、チャート、ソース）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-13</span></td><td>PPTX v2: カード型レイアウト（表紙、KPIサマリー、ハイライト、企業別2件/頁、日本市場複数頁対応、チャート1枚/頁、ソース）。テキスト切断なし・自動縮小対応</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-14</span></td><td>AI主要プレイヤー比較シート（LLMプロバイダー5社 + コーディングツール5種 + ベンチマーク）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-15</span></td><td>コンシューマー/エンタープライズ市場セグメンテーション表示</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 </tbody>
@@ -186,6 +186,9 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><span class="req-id">FR-32</span></td><td>ローカル出力ファイル7日自動削除・ログ30日自動削除</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-33</span></td><td>ニュース収集失敗時の前日データフォールバック</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-34</span></td><td>比較データ更新失敗時の既存データ維持</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-35</span></td><td>チャート生成失敗時の前日チャートPNG自動フォールバック</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-36</span></td><td>比較データタブに更新日（ファイル更新日時）を表示</td><td class="req-priority-low">低</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-37</span></td><td>ニュース収集プロンプトv2: 日本語ソース追加、分析200字化、尻切れ防止ルール</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 </tbody>
 </table>
 
@@ -521,11 +524,11 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <br>&nbsp;&nbsp;<span class="dir">generators/</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">html_generator.py</span> <span class="comment"># Jinja2レンダリング, 比較データ読込, KPI計算統合</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">chart_generator.py</span> <span class="comment"># matplotlib(PPTX用) + Plotly(HTML用) 6種チャート</span>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">pptx_generator.py</span> <span class="comment"># テンプレートベースPPTX 6種スライド</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">pptx_generator.py</span> <span class="comment"># PPTX v2: カード型レイアウト, KPIサマリー, 1チャート/1スライド</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">notion_publisher.py</span> <span class="comment"># Notion REST API, DB管理, ファイルアップロード</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">diagram_generator.py</span> <span class="comment"># 全体図解生成</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">diagram_renderer.py</span> <span class="comment"># 記事別図解HTMLレンダリング</span>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">infographic_generator.py</span> <span class="comment"># 記事サイドバー/詳細ビジュアル</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">infographic_generator.py</span> <span class="comment"># 記事サイドバー/詳細ビジュアル, 競合ポジショニング, タイムライン</span>
 <br>&nbsp;&nbsp;<span class="dir">templates/</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">report.html</span> <span class="comment"># Jinja2 HTMLテンプレート (Bootstrap 5, 6タブ)</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">base.pptx</span> <span class="comment"># PPTXテンプレート (配色, フォント設定済み)</span>
@@ -560,7 +563,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><th style="width:140px">責務</th><td>CLI引数処理、ログ設定、パイプライン実行（パース→チャート→HTML→PPTX→Notion）</td></tr>
 <tr><th>入力</th><td><code>--sample</code>（サンプルデータ） / <code>--json FILE</code>（JSONファイル） / <code>--stdin</code>（標準入力）</td></tr>
 <tr><th>出力</th><td>JSON結果オブジェクト（success, html, pptx, notion, news_count, errors）</td></tr>
-<tr><th>エラー耐性</th><td>HTML/PPTX/Notionは各々独立して失敗可能。部分的成功でも正常終了扱い</td></tr>
+<tr><th>エラー耐性</th><td>HTML/PPTX/Notionは各々独立して失敗可能。チャート生成失敗時は前日チャートを自動フォールバック。部分的成功でも正常終了扱い</td></tr>
 <tr><th>サンプルデータ</th><td>10件のダミーニュース、分析、図解データを内蔵。<code>--sample</code>でテスト可能</td></tr>
 </table>
 </div>
@@ -822,7 +825,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td>Step 0: 比較データ更新</td><td>既存 ai_comparison.json を維持</td><td>Step 1以降を通常実行</td></tr>
 <tr><td>Step 1: ニュース収集</td><td>前日の news_raw.json をコピー</td><td>前日データでレポート生成</td></tr>
 <tr><td>Step 1: フォールバックも失敗</td><td>exit 1</td><td>全処理中止</td></tr>
-<tr><td>Step 2: チャート生成失敗</td><td>generation_errorsに記録、チャートなしで続行</td><td>HTML/PPTXは生成（チャート欠落）</td></tr>
+<tr><td>Step 2: チャート生成失敗</td><td>前日のチャートPNGを自動コピー（フォールバック）、失敗時はgeneration_errorsに記録</td><td>HTML/PPTXは生成（フォールバックチャート使用）</td></tr>
 <tr><td>Step 2: HTML生成失敗</td><td>generation_errorsに記録</td><td>PPTX/Notion生成は続行</td></tr>
 <tr><td>Step 2: PPTX生成失敗</td><td>generation_errorsに記録</td><td>HTMLが成功していれば正常終了</td></tr>
 <tr><td>Step 2: Notion投稿失敗</td><td>WARNINGログ出力</td><td>HTML/PPTXが成功していれば正常終了</td></tr>

@@ -48,7 +48,7 @@ body {
    ================================================ */
 .deck-container {
     width: 100%;
-    max-width: 1200px;    /* PC: 広め */
+    max-width: 1600px;    /* デフォルト: ワイドPC向け */
     margin: 0 auto;
     padding: 0 var(--container-pad);
 }
@@ -337,18 +337,19 @@ body {
     .device-indicator { background: var(--accent-color); }
 }
 
-/* PC (1025px - 1400px) */
-@media (min-width: 1025px) and (max-width: 1400px) {
-    .deck-container { max-width: 1100px; }
+/* PC (1025px - 1599px) */
+@media (min-width: 1025px) and (max-width: 1599px) {
+    .deck-container { max-width: 92%; }
     .sources-section ul { columns: 2; }
 
     .device-indicator::after { content: 'PC'; }
 }
 
-/* ワイドPC (> 1400px) */
-@media (min-width: 1401px) {
-    .deck-container { max-width: 1200px; }
+/* ワイドPC (>= 1600px) */
+@media (min-width: 1600px) {
+    .deck-container { max-width: 1560px; }
     .sources-section ul { columns: 3; }
+    .analysis-grid { grid-template-columns: repeat(3, 1fr); }
 
     .device-indicator::after { content: 'WIDE PC'; }
 }

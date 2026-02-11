@@ -198,6 +198,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><span class="req-id">FR-43</span></td><td>規格/プロトコル一覧を発表日降順（最新が上）でソート。HTML・PPTX・Notion全出力に適用</td><td class="req-priority-low">低</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-44</span></td><td>Notion重複投稿防止: 同日ページ存在時に自動アーカイブしてから新規作成。property_map対応</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-45</span></td><td>news_raw.jsonをGitHub Pagesリポジトリにも保存。過去データの再生成を常に可能にする</td><td class="req-priority-low">低</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-46</span></td><td>Notion APIリトライ: 429/5xxレスポンス時にRetry-Afterを参照し最大2回リトライ。未使用_file_block()削除</td><td class="req-priority-low">低</td><td>完了</td></tr>
 </tbody>
 </table>
 
@@ -628,7 +629,8 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div class="accordion-body">
 <table class="table table-sm spec-table">
 <tr><th style="width:140px">DB管理</th><td><code>ensure_database()</code> - "AI News Daily Deck"データベースを検索/作成。<code>tuple[str, dict]</code>を返し、プロパティ名マッピングを含む。<code>_resolve_property_mapping()</code>でスキーマ差異を自動修復（Phase 1: 名前完全一致 → Phase 2: タイプベース推定）</td></tr>
-<tr><th>ファイルアップロード</th><td>3ステップ: File Uploadオブジェクト作成 → バイナリ送信 → DBプロパティ添付。PPTXは「PPTX」filesプロパティに格納、カバー画像は「サムネイル」プロパティに添付</td></tr>
+<tr><th>ファイルアップロード</th><td>3ステップ: File Uploadオブジェクト作成 → バイナリ送信 → DBプロパティ添付。PPTXは「pptx」filesプロパティに格納、カバー画像は「サムネイル」プロパティに添付</td></tr>
+<tr><th>APIリトライ</th><td><code>_request_with_retry()</code> - 429(レート制限)/5xxレスポンス時にRetry-Afterヘッダを参照して最大2回リトライ</td></tr>
 <tr><th>カバー画像</th><td><code>generate_cover_image()</code> - Pillow(PIL)で白背景1200x630pxのサムネイルPNG生成。トップ3ニュース（自動折り返し）、KPI 4個、企業色凡例付き</td></tr>
 <tr><th>ブロック構築</th><td>heading_1/2/3階層、toggle（各ニュース個別）、空白余白、callout、テーブル、ブックマーク、引用等をプログラマティックに生成。ソース一覧はtoggle内収納。100件ずつバッチ投稿</td></tr>
 <tr><th>図解レンダリング</th><td>6種類のdiagram_dataをNotion互換ブロック（テキストバー、テーブル、箇条書き等）に変換</td></tr>

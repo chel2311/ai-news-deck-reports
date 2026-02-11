@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI News Daily Deck - 設計仕様書・要件定義書</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root {
+  --corp: #005BAB;
+  --corp-light: #5BA4D9;
+  --corp-dark: #003D73;
+  --accent: #F0961C;
+  --text-dark: #231815;
+  --bg-light: #F8FAFB;
+}
+body { font-family: 'Meiryo','Hiragino Sans',sans-serif; color: var(--text-dark); background: var(--bg-light); }
+.doc-header { background: linear-gradient(135deg, var(--corp-dark), var(--corp)); color: #fff; padding: 3rem 0; }
+.doc-header h1 { font-size: 2rem; font-weight: 700; }
+.doc-header .subtitle { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
+.badge-ver { background: var(--accent); color: #fff; font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; }
+.nav-pills .nav-link { color: var(--corp); border-radius: 0; border-bottom: 3px solid transparent; background: none; font-weight: 600; }
+.nav-pills .nav-link.active { color: var(--corp-dark); border-bottom-color: var(--accent); background: rgba(0,91,171,0.06); }
+.section-title { color: var(--corp-dark); font-weight: 700; border-left: 4px solid var(--accent); padding-left: 12px; margin: 2rem 0 1rem; }
+.card { border: none; box-shadow: 0 1px 4px rgba(0,0,0,0.07); border-radius: 8px; }
+.card-header { background: var(--corp); color: #fff; font-weight: 600; border-radius: 8px 8px 0 0 !important; }
+table.spec-table { font-size: 0.88rem; }
+table.spec-table th { background: var(--corp); color: #fff; font-weight: 600; white-space: nowrap; }
+table.spec-table td { vertical-align: top; }
+code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-radius: 3px; font-size: 0.85em; }
+.req-id { display: inline-block; background: var(--corp); color: #fff; font-size: 0.72rem; padding: 1px 8px; border-radius: 10px; font-weight: 700; margin-right: 6px; }
+.req-priority-high { color: #dc3545; font-weight: 700; }
+.req-priority-mid { color: var(--accent); font-weight: 700; }
+.req-priority-low { color: #6c757d; }
+
+/* Workflow Diagram Styles */
+.wf-container { display: flex; flex-direction: column; gap: 0; align-items: center; padding: 1.5rem 0; }
+.wf-step { position: relative; background: #fff; border: 2px solid var(--corp-light); border-radius: 10px; padding: 12px 20px; min-width: 280px; max-width: 420px; text-align: center; }
+.wf-step.primary { background: var(--corp); color: #fff; border-color: var(--corp-dark); }
+.wf-step.accent { background: var(--accent); color: #fff; border-color: #D07A10; }
+.wf-step.success { background: #198754; color: #fff; border-color: #146c43; }
+.wf-step.danger { background: #dc3545; color: #fff; border-color: #b02a37; }
+.wf-step .step-label { font-weight: 700; font-size: 0.95rem; }
+.wf-step .step-desc { font-size: 0.78rem; opacity: 0.85; margin-top: 2px; }
+.wf-arrow { width: 2px; height: 28px; background: var(--corp-light); position: relative; }
+.wf-arrow::after { content: ''; position: absolute; bottom: -5px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--corp-light); }
+.wf-branch { display: flex; gap: 1rem; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+.wf-branch-label { font-size: 0.72rem; color: var(--corp); font-weight: 600; text-align: center; margin-bottom: 4px; }
+
+/* Architecture Diagram */
+.arch-layer { border: 2px solid var(--corp-light); border-radius: 12px; padding: 16px; margin: 8px 0; position: relative; }
+.arch-layer .layer-label { position: absolute; top: -10px; left: 16px; background: var(--bg-light); padding: 0 8px; font-size: 0.72rem; color: var(--corp); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.arch-box { background: #fff; border: 1px solid #dee2e6; border-radius: 6px; padding: 10px; text-align: center; font-size: 0.82rem; transition: transform 0.15s; }
+.arch-box:hover { transform: translateY(-2px); box-shadow: 0 3px 8px rgba(0,91,171,0.12); }
+.arch-box .box-icon { font-size: 1.3rem; display: block; margin-bottom: 4px; }
+.arch-box.highlight { border-color: var(--accent); border-width: 2px; }
+
+/* Data Flow */
+.df-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
+.df-node { background: #fff; border: 1.5px solid var(--corp-light); border-radius: 6px; padding: 6px 14px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
+.df-node.ext { background: #FFF3E0; border-color: var(--accent); }
+.df-node.store { background: #E8F5E9; border-color: #4CAF50; border-radius: 0; }
+.df-node.process { background: var(--corp); color: #fff; }
+.df-arrow-r { color: var(--corp-light); font-size: 1.2rem; }
+
+/* File Tree */
+.file-tree { font-family: 'Courier New', monospace; font-size: 0.82rem; line-height: 1.6; background: #1a1a2e; color: #e0e0e0; padding: 20px; border-radius: 8px; overflow-x: auto; }
+.file-tree .dir { color: #5BA4D9; font-weight: 700; }
+.file-tree .file { color: #B8D4E8; }
+.file-tree .comment { color: #6c757d; font-style: italic; }
+
+/* TOC */
+.toc { position: sticky; top: 80px; }
+.toc a { color: var(--corp); font-size: 0.82rem; text-decoration: none; display: block; padding: 3px 0; border-left: 2px solid transparent; padding-left: 10px; }
+.toc a:hover, .toc a.active { color: var(--corp-dark); border-left-color: var(--accent); background: rgba(0,91,171,0.03); }
+.toc .toc-h3 { padding-left: 22px; font-size: 0.78rem; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 28px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--corp-light); }
+.timeline-item { position: relative; margin-bottom: 16px; }
+.timeline-item::before { content: ''; position: absolute; left: -24px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--corp); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--corp-light); }
+.timeline-item.active::before { background: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+
+@media print {
+  .nav-pills, .toc { display: none; }
+  .tab-pane { display: block !important; opacity: 1 !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="doc-header">
+<div class="container">
+  <div class="d-flex align-items-center gap-3 mb-2">
+    <h1 class="mb-0">AI News Daily Deck</h1>
+    <span class="badge-ver">v1.0</span>
+  </div>
+  <div class="subtitle">設計仕様書・要件定義書</div>
+  <div class="subtitle mt-2">作成日: 2026-02-10 | ドキュメントID: ANDD-SPEC-001</div>
+</div>
+</div>
+
+<!-- Navigation -->
+<div class="sticky-top bg-white border-bottom shadow-sm" style="z-index:1020">
+<div class="container">
+<ul class="nav nav-pills py-2" id="mainTab" role="tablist">
+  <li class="nav-item"><a class="nav-link active" data-bs-toggle="pill" href="#tab-req">要件定義</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#tab-arch">アーキテクチャ</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#tab-data">データ設計</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#tab-module">モジュール設計</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#tab-workflow">ワークフロー</a></li>
+  <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#tab-infra">インフラ・運用</a></li>
+</ul>
+</div>
+</div>
+
+<div class="container py-4">
+<div class="tab-content">
+
+<!-- ===================== TAB 1: 要件定義 ===================== -->
+<div class="tab-pane fade show active" id="tab-req">
+<div class="row">
+<div class="col-lg-9">
+
+<h2 class="section-title" id="req-overview">1. システム概要</h2>
+<div class="card mb-4">
+<div class="card-body">
+<p><strong>AI News Daily Deck</strong>は、毎朝自動でAI業界のニュースを収集し、解説・図解・インフォグラフィック付きのレポートを生成するシステムである。</p>
+<table class="table table-sm spec-table mb-0">
+<tr><th style="width:160px">目的</th><td>AI御三家（OpenAI, Anthropic, Google）+ Microsoft, Metaを中心に、日本市場の動向・考察を含む日次レポートを自動生成</td></tr>
+<tr><th>対象ユーザー</th><td>AI業界動向を追う経営層・技術責任者</td></tr>
+<tr><th>出力形式</th><td>HTML（メイン、スマホ対応）、PPTX（サブ）、Notion（データベース形式）</td></tr>
+<tr><th>実行頻度</th><td>毎日1回（07:00 JST、cron自動実行）</td></tr>
+<tr><th>運用コスト</th><td>サブスク範囲内（Claude Code Pro + 無料API枠）</td></tr>
+</table>
+</div>
+</div>
+
+<h2 class="section-title" id="req-func">2. 機能要件</h2>
+
+<h5>2.1 ニュース収集</h5>
+<table class="table table-bordered spec-table">
+<thead><tr><th>ID</th><th>要件</th><th>優先度</th><th>実装状態</th></tr></thead>
+<tbody>
+<tr><td><span class="req-id">FR-01</span></td><td>Brave Search / Tavily MCPを使用し、直近24-48時間のAIニュースを8-12件収集する</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-02</span></td><td>対象企業: OpenAI, Anthropic, Google/DeepMind, Microsoft, Meta</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-03</span></td><td>対象カテゴリ: LLM, Image, Video, Robotics, Policy, Business</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-04</span></td><td>各ニュースに重要度(1-5)、6項目の深掘り分析、図解データを付与</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-05</span></td><td>世界市場動向分析・日本市場考察・アクションアイテムを生成</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-06</span></td><td>企業間比較・トレンド洞察・ニュース間関連性を構造化データで出力</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+</tbody>
+</table>
+
+<h5>2.2 レポート生成</h5>
+<table class="table table-bordered spec-table">
+<thead><tr><th>ID</th><th>要件</th><th>優先度</th><th>実装状態</th></tr></thead>
+<tbody>
+<tr><td><span class="req-id">FR-10</span></td><td>HTMLレポート: Bootstrap 5ベース、タブUI（6セクション）、レスポンシブ対応</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-11</span></td><td>インタラクティブチャート: Plotly（企業別棒グラフ、カテゴリレーダー、ヒートマップ、ドーナツ、ツリーマップ、バブル）</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-12</span></td><td>記事ごとの図解レンダリング（比較表、フローステップ、メトリクス、賛否、バー、タイムライン）</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-13</span></td><td>PPTX v2: カード型レイアウト（表紙、KPIサマリー、ハイライト、企業別2件/頁、日本市場複数頁対応、チャート1枚/頁、ソース）。テキスト切断なし・自動縮小対応</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-14</span></td><td>AI主要プレイヤー比較シート（LLMプロバイダー5社 + コーディングツール5種 + ベンチマーク）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-15</span></td><td>コンシューマー/エンタープライズ市場セグメンテーション表示</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+</tbody>
+</table>
+
+<h5>2.3 配信・保存</h5>
+<table class="table table-bordered spec-table">
+<thead><tr><th>ID</th><th>要件</th><th>優先度</th><th>実装状態</th></tr></thead>
+<tbody>
+<tr><td><span class="req-id">FR-20</span></td><td>GitHub Pagesへ自動push（HTMLレポート公開）</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-21</span></td><td>Notionデータベースへ自動投稿（プロパティ: 日付、企業、カテゴリ、件数、重要度、要約）</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-22</span></td><td>NotionへPPTXファイル添付・カバー画像アップロード（ギャラリービュー対応）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-23</span></td><td>GitHub PagesレポートURLをNotionプロパティに自動設定</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+</tbody>
+</table>
+
+<h5>2.4 自動化・保守</h5>
+<table class="table table-bordered spec-table">
+<thead><tr><th>ID</th><th>要件</th><th>優先度</th><th>実装状態</th></tr></thead>
+<tbody>
+<tr><td><span class="req-id">FR-30</span></td><td>cron + <code>claude -p</code>による毎朝07:00 JST自動実行</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-31</span></td><td>週次（毎週月曜）のAI比較データ自動更新（<code>claude -p</code> + WebSearch）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-32</span></td><td>ローカル出力ファイル7日自動削除・ログ30日自動削除</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-33</span></td><td>ニュース収集失敗時の前日データフォールバック</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-34</span></td><td>比較データ更新失敗時の既存データ維持</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-35</span></td><td>チャート生成失敗時の前日チャートPNG自動フォールバック</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-36</span></td><td>比較データタブに更新日（ファイル更新日時）を表示</td><td class="req-priority-low">低</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-37</span></td><td>ニュース収集プロンプトv2: 日本語ソース追加、分析200字化、尻切れ防止ルール</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="req-nonfunc">3. 非機能要件</h2>
+<table class="table table-bordered spec-table">
+<thead><tr><th>ID</th><th>カテゴリ</th><th>要件</th><th>目標値</th></tr></thead>
+<tbody>
+<tr><td><span class="req-id">NF-01</span></td><td>コスト</td><td>月額運用コスト</td><td>Claude Code Proサブスク範囲内（追加API費用$0）</td></tr>
+<tr><td><span class="req-id">NF-02</span></td><td>コスト</td><td>1回あたりのclaude -p予算上限</td><td>ニュース収集: $5.00 / 比較データ更新: $2.00</td></tr>
+<tr><td><span class="req-id">NF-03</span></td><td>API使用量</td><td>Brave Search: 月2,000回以内 / Tavily: 月1,000回以内</td><td>警告閾値: Brave 1,500回 / Tavily 800回</td></tr>
+<tr><td><span class="req-id">NF-04</span></td><td>レスポンシブ</td><td>スマホ(375px)からPC(1440px)まで閲覧可能</td><td>Bootstrap 5グリッド + カスタムCSS</td></tr>
+<tr><td><span class="req-id">NF-05</span></td><td>信頼性</td><td>各生成ステップが独立して失敗可能</td><td>部分的成功でもレポート出力</td></tr>
+<tr><td><span class="req-id">NF-06</span></td><td>著作権</td><td>全ニュースに引用元URL・ソース名を必須付与</td><td>100%</td></tr>
+<tr><td><span class="req-id">NF-07</span></td><td>データ鮮度</td><td>ニュース: 24-48時間以内 / 比較データ: 1週間以内</td><td>毎日/毎週月曜更新</td></tr>
+<tr><td><span class="req-id">NF-08</span></td><td>ストレージ</td><td>ローカル出力は7日分のみ保持</td><td>自動クリーンアップ</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="req-ext">4. 外部インターフェース</h2>
+<table class="table table-bordered spec-table">
+<thead><tr><th>対象</th><th>プロトコル</th><th>用途</th><th>認証</th><th>無料枠</th></tr></thead>
+<tbody>
+<tr><td>Brave Search MCP</td><td>MCP (claude -p経由)</td><td>ニュース検索</td><td>APIキー (~/.claude.json)</td><td>2,000回/月</td></tr>
+<tr><td>Tavily MCP</td><td>MCP (claude -p経由)</td><td>記事詳細抽出</td><td>APIキー (~/.claude.json)</td><td>1,000回/月</td></tr>
+<tr><td>Notion API</td><td>REST (v2022-06-28)</td><td>レポート投稿・ファイル添付</td><td>Bearer Token (env)</td><td>統合トークン</td></tr>
+<tr><td>GitHub Pages</td><td>git push</td><td>HTMLレポート公開</td><td>SSH Key / Git Credential</td><td>無制限</td></tr>
+<tr><td>Claude CLI</td><td><code>claude -p</code> (非対話)</td><td>ニュース収集・比較データ更新</td><td>Claude Code Proサブスク</td><td>サブスク内</td></tr>
+</tbody>
+</table>
+
+</div>
+<!-- TOC sidebar -->
+<div class="col-lg-3 d-none d-lg-block">
+<div class="toc">
+<strong class="d-block mb-2" style="color:var(--corp-dark);font-size:0.85rem">目次</strong>
+<a href="#req-overview">1. システム概要</a>
+<a href="#req-func">2. 機能要件</a>
+<a href="#req-nonfunc">3. 非機能要件</a>
+<a href="#req-ext">4. 外部インターフェース</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ===================== TAB 2: アーキテクチャ ===================== -->
+<div class="tab-pane fade" id="tab-arch">
+
+<h2 class="section-title" id="arch-overview">1. アーキテクチャ概要</h2>
+<p>全処理を <code>claude -p</code>（非対話CLIモード）経由で実行し、Pythonスクリプトでレポートを生成するパイプラインアーキテクチャ。</p>
+
+<div class="card mb-4">
+<div class="card-header">システムアーキテクチャ図</div>
+<div class="card-body p-4">
+
+<!-- Trigger Layer -->
+<div class="arch-layer mb-3">
+<div class="layer-label">Trigger Layer</div>
+<div class="row g-2 justify-content-center">
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#9200;</span>cron<br><small>毎朝 07:00 JST</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128196;</span>run-daily.sh<br><small>オーケストレーター</small></div></div>
+</div>
+</div>
+
+<!-- Collection Layer -->
+<div class="arch-layer mb-3">
+<div class="layer-label">Collection Layer (claude -p)</div>
+<div class="row g-2 justify-content-center">
+  <div class="col-auto"><div class="arch-box highlight"><span class="box-icon">&#128269;</span>Brave Search<br><small>MCP / 2,000回/月</small></div></div>
+  <div class="col-auto"><div class="arch-box highlight"><span class="box-icon">&#128270;</span>Tavily<br><small>MCP / 1,000回/月</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#129302;</span>Claude Sonnet<br><small>分析・JSON生成</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128202;</span>WebSearch<br><small>比較データ更新(月曜)</small></div></div>
+</div>
+</div>
+
+<!-- Processing Layer -->
+<div class="arch-layer mb-3">
+<div class="layer-label">Processing Layer (Python)</div>
+<div class="row g-2 justify-content-center">
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128230;</span>news_parser<br><small>JSON正規化・重複排除</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128200;</span>chart_generator<br><small>matplotlib + Plotly</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128196;</span>html_generator<br><small>Jinja2テンプレート</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128218;</span>pptx_generator<br><small>python-pptx</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128195;</span>notion_publisher<br><small>REST API投稿</small></div></div>
+</div>
+</div>
+
+<!-- Output Layer -->
+<div class="arch-layer">
+<div class="layer-label">Output Layer</div>
+<div class="row g-2 justify-content-center">
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#127760;</span>GitHub Pages<br><small>HTML公開</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128214;</span>Notion DB<br><small>構造化データ</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128193;</span>Local Output<br><small>7日間保持</small></div></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<h2 class="section-title" id="arch-decision">2. アーキテクチャ判断</h2>
+<table class="table table-bordered spec-table">
+<thead><tr><th>判断項目</th><th>選択</th><th>理由</th><th>代替案</th></tr></thead>
+<tbody>
+<tr><td>ニュース収集方式</td><td><code>claude -p</code> + MCP</td><td>Claude Code Proサブスク内で追加コスト0円。MCP APIキーは設定済み</td><td>Python直接API呼出し（サブスク外の別料金発生）</td></tr>
+<tr><td>HTMLチャート</td><td>Plotly（CDN）</td><td>インタラクティブ。ホバー・ズーム対応</td><td>Chart.js（軽量だが機能少）、matplotlib画像埋込（非インタラクティブ）</td></tr>
+<tr><td>PPTXチャート</td><td>matplotlib（静的PNG）</td><td>PPTX内に画像として埋込可能</td><td>Plotly→PNG変換（依存増加）</td></tr>
+<tr><td>HTMLテンプレート</td><td>Jinja2</td><td>Pythonエコシステム。autoescape対応</td><td>文字列連結（保守性低い）</td></tr>
+<tr><td>Notion投稿</td><td>REST API直接呼出し</td><td>MCP経由では細かい制御困難（ファイル添付、プロパティ設定）</td><td>Notion MCP（機能制限あり）</td></tr>
+<tr><td>デプロイ</td><td>GitHub Pages</td><td>無料、git pushで即反映。静的HTMLに最適</td><td>S3 + CloudFront（オーバーキル）</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="arch-tech">3. 技術スタック</h2>
+<div class="row g-3">
+<div class="col-md-6">
+<div class="card h-100">
+<div class="card-header">ランタイム・言語</div>
+<div class="card-body">
+<table class="table table-sm spec-table mb-0">
+<tr><td>Python</td><td>3.x</td></tr>
+<tr><td>Node.js</td><td>v22.15.1 (claude CLI用)</td></tr>
+<tr><td>Bash</td><td>シェルスクリプト (run-daily.sh)</td></tr>
+</table>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card h-100">
+<div class="card-header">主要ライブラリ</div>
+<div class="card-body">
+<table class="table table-sm spec-table mb-0">
+<tr><td>jinja2</td><td>&ge;3.1</td><td>HTMLテンプレート</td></tr>
+<tr><td>matplotlib</td><td>&ge;3.8</td><td>静的チャート (PPTX用)</td></tr>
+<tr><td>plotly</td><td>6.5.2</td><td>インタラクティブチャート (HTML用)</td></tr>
+<tr><td>python-pptx</td><td>1.0.2</td><td>PPTXスライド生成</td></tr>
+<tr><td>wordcloud</td><td>&ge;1.9</td><td>ワードクラウド</td></tr>
+<tr><td>pillow</td><td>11.3.0</td><td>画像処理</td></tr>
+<tr><td>requests</td><td>2.32.5</td><td>Notion API通信</td></tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- ===================== TAB 3: データ設計 ===================== -->
+<div class="tab-pane fade" id="tab-data">
+
+<h2 class="section-title" id="data-model">1. データモデル（models.py）</h2>
+<p>全生成処理の中心となる共通データオブジェクト。1つの<code>DailyReport</code>オブジェクトからHTML・PPTX・Notionの3出力を生成する。</p>
+
+<div class="card mb-4">
+<div class="card-header">ER図（クラス関連図）</div>
+<div class="card-body">
+<svg viewBox="0 0 820 520" style="width:100%;max-width:820px;height:auto" xmlns="http://www.w3.org/2000/svg" font-family="Meiryo,sans-serif">
+  <!-- DailyReport (center) -->
+  <rect x="280" y="10" width="260" height="200" rx="8" fill="#005BAB" stroke="#003D73" stroke-width="2"/>
+  <text x="410" y="35" fill="#fff" font-weight="bold" font-size="14" text-anchor="middle">DailyReport</text>
+  <line x1="290" y1="42" x2="530" y2="42" stroke="rgba(255,255,255,0.3)"/>
+  <text x="290" y="60" fill="#B8D4E8" font-size="10.5">
+    <tspan x="295" dy="0">date: str</tspan>
+    <tspan x="295" dy="14">highlight: NewsItem?</tspan>
+    <tspan x="295" dy="14">news_items: list[NewsItem]</tspan>
+    <tspan x="295" dy="14">news_by_company: dict</tspan>
+    <tspan x="295" dy="14">key_takeaways: list[str]</tspan>
+    <tspan x="295" dy="14">trend_insights: list[TrendInsight]</tspan>
+    <tspan x="295" dy="14">relationships: list[NewsRelationship]</tspan>
+    <tspan x="295" dy="14">company_comparisons: list[CompanyComparison]</tspan>
+    <tspan x="295" dy="14">world_analysis / japan_analysis: str</tspan>
+    <tspan x="295" dy="14">keyword_counts / category_counts: dict</tspan>
+  </text>
+
+  <!-- NewsItem -->
+  <rect x="10" y="270" width="230" height="180" rx="8" fill="#fff" stroke="#005BAB" stroke-width="2"/>
+  <rect x="10" y="270" width="230" height="26" rx="8" fill="#5BA4D9"/>
+  <text x="125" y="288" fill="#fff" font-weight="bold" font-size="12" text-anchor="middle">NewsItem</text>
+  <text x="20" y="310" fill="#333" font-size="10">
+    <tspan x="20" dy="0">title / url / source: str</tspan>
+    <tspan x="20" dy="13">company / category: str</tspan>
+    <tspan x="20" dy="13">summary: str</tspan>
+    <tspan x="20" dy="13">importance: int (1-5)</tspan>
+    <tspan x="20" dy="13">date: str</tspan>
+    <tspan x="20" dy="13">analysis: NewsAnalysis?</tspan>
+    <tspan x="20" dy="13">diagram_data: list[DiagramData]</tspan>
+    <tspan x="20" dy="13">related_ids: list[int]</tspan>
+  </text>
+  <!-- Arrow: DailyReport -> NewsItem -->
+  <line x1="280" y1="140" x2="240" y2="270" stroke="#005BAB" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+  <text x="240" y="200" fill="#005BAB" font-size="9">1..*</text>
+
+  <!-- NewsAnalysis -->
+  <rect x="10" y="480" width="200" height="30" rx="6" fill="#FFF3E0" stroke="#F0961C" stroke-width="1.5"/>
+  <text x="110" y="500" fill="#333" font-size="11" text-anchor="middle" font-weight="bold">NewsAnalysis</text>
+  <line x1="110" y1="450" x2="110" y2="480" stroke="#F0961C" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+  <text x="115" y="468" fill="#F0961C" font-size="9">0..1</text>
+
+  <!-- DiagramData -->
+  <rect x="220" y="480" width="200" height="30" rx="6" fill="#FFF3E0" stroke="#F0961C" stroke-width="1.5"/>
+  <text x="320" y="500" fill="#333" font-size="11" text-anchor="middle" font-weight="bold">DiagramData</text>
+  <line x1="200" y1="430" x2="300" y2="480" stroke="#F0961C" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+  <text x="260" y="455" fill="#F0961C" font-size="9">0..*</text>
+
+  <!-- TrendInsight -->
+  <rect x="580" y="60" width="220" height="70" rx="8" fill="#fff" stroke="#005BAB" stroke-width="1.5"/>
+  <rect x="580" y="60" width="220" height="22" rx="8" fill="#5BA4D9"/>
+  <text x="690" y="76" fill="#fff" font-size="11" text-anchor="middle" font-weight="bold">TrendInsight</text>
+  <text x="590" y="98" fill="#333" font-size="10">
+    <tspan x="590" dy="0">title / description: str</tspan>
+    <tspan x="590" dy="13">related_companies: list</tspan>
+  </text>
+  <line x1="540" y1="80" x2="580" y2="80" stroke="#005BAB" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- CompanyComparison -->
+  <rect x="580" y="155" width="220" height="70" rx="8" fill="#fff" stroke="#005BAB" stroke-width="1.5"/>
+  <rect x="580" y="155" width="220" height="22" rx="8" fill="#5BA4D9"/>
+  <text x="690" y="171" fill="#fff" font-size="11" text-anchor="middle" font-weight="bold">CompanyComparison</text>
+  <text x="590" y="193" fill="#333" font-size="10">
+    <tspan x="590" dy="0">company / focus_area / key_move: str</tspan>
+    <tspan x="590" dy="13">momentum: up | stable | down</tspan>
+  </text>
+  <line x1="540" y1="170" x2="580" y2="170" stroke="#005BAB" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- NewsRelationship -->
+  <rect x="580" y="250" width="220" height="70" rx="8" fill="#fff" stroke="#005BAB" stroke-width="1.5"/>
+  <rect x="580" y="250" width="220" height="22" rx="8" fill="#5BA4D9"/>
+  <text x="690" y="266" fill="#fff" font-size="11" text-anchor="middle" font-weight="bold">NewsRelationship</text>
+  <text x="590" y="288" fill="#333" font-size="10">
+    <tspan x="590" dy="0">from_idx / to_idx: int</tspan>
+    <tspan x="590" dy="13">relation_type / description: str</tspan>
+  </text>
+  <line x1="540" y1="200" x2="580" y2="270" stroke="#005BAB" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- Arrow defs -->
+  <defs>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#005BAB"/></marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#F0961C"/></marker>
+  </defs>
+</svg>
+</div>
+</div>
+
+<h2 class="section-title" id="data-comparison">2. 比較データ（ai_comparison.json）</h2>
+<p>週次自動更新される静的JSONデータ。HTMLレポートのデータタブで使用。</p>
+<table class="table table-bordered spec-table">
+<thead><tr><th>キー</th><th>型</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td><code>llm_providers[]</code></td><td>Array&lt;Object&gt;</td><td>5社（OpenAI, Anthropic, Google, DeepSeek, xAI）のLLMプロバイダーデータ。consumer/enterprise市場シェア、料金、ベンチマーク等</td></tr>
+<tr><td><code>coding_tools[]</code></td><td>Array&lt;Object&gt;</td><td>5種（Claude Code, Codex CLI, Gemini CLI, GitHub Copilot, Cursor）のコーディングツール比較</td></tr>
+<tr><td><code>benchmark_rankings{}</code></td><td>Object&lt;Array&gt;</td><td>SWE-bench Verified（上位5）、Terminal-Bench 2.0（上位3）のランキング</td></tr>
+<tr><td><code>enterprise_market{}</code></td><td>Object</td><td>エンタープライズLLM APIシェア推移タイムライン（Menlo Ventures調査ベース）</td></tr>
+<tr><td><code>sources[]</code></td><td>Array&lt;Object&gt;</td><td>データソース一覧（名前、URL）</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="data-flow">3. データフロー図</h2>
+<div class="card mb-4">
+<div class="card-body">
+
+<h6 class="fw-bold mb-3">3.1 ニュース収集フロー</h6>
+<div class="df-row">
+  <div class="df-node ext">Brave Search</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node process">claude -p (Sonnet)</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">news_raw_output.txt</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">JSON抽出 (jq/Python)</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node store">news_raw.json</div>
+</div>
+
+<h6 class="fw-bold mb-3 mt-4">3.2 レポート生成フロー</h6>
+<div class="df-row">
+  <div class="df-node store">news_raw.json</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">news_parser.py</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node process">DailyReport Object</div>
+</div>
+<div class="df-row ms-3">
+  <div class="df-node process">DailyReport</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">html_generator + chart_generator</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node store">index.html + charts/</div>
+</div>
+<div class="df-row ms-3">
+  <div class="df-node process">DailyReport</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">pptx_generator</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node store">report.pptx</div>
+</div>
+<div class="df-row ms-3">
+  <div class="df-node process">DailyReport</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">notion_publisher</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node ext">Notion Database</div>
+</div>
+
+<h6 class="fw-bold mb-3 mt-4">3.3 比較データ更新フロー（週次）</h6>
+<div class="df-row">
+  <div class="df-node ext">WebSearch</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node process">claude -p (Sonnet)</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">comparison_raw.txt</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">JSON抽出+検証</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node store">data/ai_comparison.json</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<!-- ===================== TAB 4: モジュール設計 ===================== -->
+<div class="tab-pane fade" id="tab-module">
+
+<h2 class="section-title" id="mod-tree">1. プロジェクト構造</h2>
+<div class="file-tree mb-4">
+<span class="dir">ai-news-deck/</span>
+<br>&nbsp;&nbsp;<span class="file">generate.py</span> <span class="comment"># メイン生成スクリプト (--sample, --json, --stdin)</span>
+<br>&nbsp;&nbsp;<span class="file">config.py</span> <span class="comment"># 設定 (企業リスト, カラー, API上限, Notion設定)</span>
+<br>&nbsp;&nbsp;<span class="file">models.py</span> <span class="comment"># データモデル (DailyReport, NewsItem 等 7クラス)</span>
+<br>&nbsp;&nbsp;<span class="file">requirements.txt</span>
+<br>&nbsp;&nbsp;<span class="dir">collectors/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">news_parser.py</span> <span class="comment"># JSON正規化, 企業名/カテゴリ名マッピング, 重複排除</span>
+<br>&nbsp;&nbsp;<span class="dir">generators/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">html_generator.py</span> <span class="comment"># Jinja2レンダリング, 比較データ読込, KPI計算統合</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">chart_generator.py</span> <span class="comment"># matplotlib(PPTX用) + Plotly(HTML用) 6種チャート</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">pptx_generator.py</span> <span class="comment"># PPTX v2: カード型レイアウト, KPIサマリー, 1チャート/1スライド</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">notion_publisher.py</span> <span class="comment"># Notion REST API, DB管理, ファイルアップロード</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">diagram_generator.py</span> <span class="comment"># 全体図解生成</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">diagram_renderer.py</span> <span class="comment"># 記事別図解HTMLレンダリング</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">infographic_generator.py</span> <span class="comment"># 記事サイドバー/詳細ビジュアル, 競合ポジショニング, タイムライン</span>
+<br>&nbsp;&nbsp;<span class="dir">templates/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">report.html</span> <span class="comment"># Jinja2 HTMLテンプレート (Bootstrap 5, 6タブ)</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">base.pptx</span> <span class="comment"># PPTXテンプレート (配色, フォント設定済み)</span>
+<br>&nbsp;&nbsp;<span class="dir">assets/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">style.css</span> <span class="comment"># カスタムCSS (#005BAB, Meiryo, ホバー効果)</span>
+<br>&nbsp;&nbsp;<span class="dir">data/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">ai_comparison.json</span> <span class="comment"># AI比較データ (週次更新)</span>
+<br>&nbsp;&nbsp;<span class="dir">prompts/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">daily-news.md</span> <span class="comment"># ニュース収集プロンプト</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">update-comparison.md</span> <span class="comment"># 比較データ更新プロンプト</span>
+<br>&nbsp;&nbsp;<span class="dir">automation/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">run-daily.sh</span> <span class="comment"># デイリー実行ランチャー (Step 0-6)</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">cron_setup.sh</span> <span class="comment"># cron登録ヘルパー</span>
+<br>&nbsp;&nbsp;<span class="dir">output/</span> <span class="comment"># 日付別出力 (7日保持)</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">YYYY-MM-DD/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">index.html</span>, <span class="file">report.pptx</span>, <span class="dir">charts/</span>
+<br>&nbsp;&nbsp;<span class="dir">logs/</span> <span class="comment"># 実行ログ (30日保持)</span>
+<br>&nbsp;&nbsp;<span class="dir">docs/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">specification.html</span> <span class="comment"># 本ドキュメント</span>
+</div>
+
+<h2 class="section-title" id="mod-detail">2. モジュール詳細</h2>
+
+<div class="accordion" id="moduleAccordion">
+
+<!-- generate.py -->
+<div class="accordion-item">
+<h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#mod1">generate.py - メインオーケストレーター</button></h2>
+<div id="mod1" class="accordion-collapse collapse show" data-bs-parent="#moduleAccordion">
+<div class="accordion-body">
+<table class="table table-sm spec-table">
+<tr><th style="width:140px">責務</th><td>CLI引数処理、ログ設定、パイプライン実行（パース→チャート→HTML→PPTX→Notion）</td></tr>
+<tr><th>入力</th><td><code>--sample</code>（サンプルデータ） / <code>--json FILE</code>（JSONファイル） / <code>--stdin</code>（標準入力）</td></tr>
+<tr><th>出力</th><td>JSON結果オブジェクト（success, html, pptx, notion, news_count, errors）</td></tr>
+<tr><th>エラー耐性</th><td>HTML/PPTX/Notionは各々独立して失敗可能。チャート生成失敗時は前日チャートを自動フォールバック。部分的成功でも正常終了扱い</td></tr>
+<tr><th>サンプルデータ</th><td>10件のダミーニュース、分析、図解データを内蔵。<code>--sample</code>でテスト可能</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- news_parser.py -->
+<div class="accordion-item">
+<h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mod2">collectors/news_parser.py - データパーサー</button></h2>
+<div id="mod2" class="accordion-collapse collapse" data-bs-parent="#moduleAccordion">
+<div class="accordion-body">
+<table class="table table-sm spec-table">
+<tr><th style="width:140px">責務</th><td>Claude生成のニュースJSONをDailyReportオブジェクトに変換</td></tr>
+<tr><th>主要関数</th><td><code>parse_news_json(json_data, date)</code> &rarr; DailyReport</td></tr>
+<tr><th>正規化</th><td>企業名マッピング（17パターン）、カテゴリマッピング（16パターン）</td></tr>
+<tr><th>重複排除</th><td>タイトルの正規化後の完全一致で判定</td></tr>
+<tr><th>キーワード抽出</th><td>タイトル+サマリーから英単語を抽出、ストップワード除外、上位50件</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- chart_generator.py -->
+<div class="accordion-item">
+<h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mod3">generators/chart_generator.py - チャート生成</button></h2>
+<div id="mod3" class="accordion-collapse collapse" data-bs-parent="#moduleAccordion">
+<div class="accordion-body">
+<table class="table table-sm spec-table">
+<tr><th style="width:140px">matplotlib (PPTX用)</th><td>企業別棒グラフ、カテゴリレーダー、重要度タイムライン（PNG出力、DPI 150）</td></tr>
+<tr><th>Plotly (HTML用)</th><td>企業別件数+重要度複合、カテゴリレーダー、ヒートマップ、重要度ドーナツ、ソースツリーマップ、ニュースランドスケープバブル</td></tr>
+<tr><th>KPI計算</th><td><code>compute_kpi_data()</code> - 総件数、平均重要度、高影響件数、最多企業/カテゴリ等</td></tr>
+<tr><th>日本語フォント</th><td>IPAGothic (<code>/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf</code>)</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- notion_publisher.py -->
+<div class="accordion-item">
+<h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mod4">generators/notion_publisher.py - Notion連携</button></h2>
+<div id="mod4" class="accordion-collapse collapse" data-bs-parent="#moduleAccordion">
+<div class="accordion-body">
+<table class="table table-sm spec-table">
+<tr><th style="width:140px">DB管理</th><td><code>ensure_database()</code> - "AI News Daily Deck"データベースを検索/作成。プロパティ: 名前、日付、企業(multi_select)、カテゴリ、件数、重要度、要約、ハイライト、URL、サムネイル</td></tr>
+<tr><th>ファイルアップロード</th><td>3ステップ: File Uploadオブジェクト作成 → バイナリ送信 → ページ添付。PPTX + カバー画像を添付</td></tr>
+<tr><th>カバー画像</th><td><code>generate_cover_image()</code> - matplotlibで日付・トップ3ニュース・統計を含むギャラリービュー用PNG自動生成</td></tr>
+<tr><th>ブロック構築</th><td>目次、コールアウト、見出し、テーブル、トグル、ブックマーク、引用等のNotionブロックをプログラマティックに生成。100件ずつバッチ投稿</td></tr>
+<tr><th>図解レンダリング</th><td>6種類のdiagram_dataをNotion互換ブロック（テキストバー、テーブル、箇条書き等）に変換</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================== TAB 5: ワークフロー ===================== -->
+<div class="tab-pane fade" id="tab-workflow">
+
+<h2 class="section-title" id="wf-daily">1. デイリー実行ワークフロー</h2>
+<p><code>run-daily.sh</code> が実行する全7ステップ。</p>
+
+<div class="card mb-4">
+<div class="card-header">run-daily.sh 実行フロー</div>
+<div class="card-body">
+<div class="wf-container">
+
+  <div class="wf-step primary">
+    <div class="step-label">cron 07:00 JST</div>
+    <div class="step-desc">PATH設定, 環境変数読込, ログ初期化</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step accent" style="border-style:dashed">
+    <div class="step-label">Step 0: 比較データ週次更新 (月曜のみ)</div>
+    <div class="step-desc">claude -p + WebSearch &rarr; ai_comparison.json 更新<br>Budget: $2.00 | 失敗時: 既存データ維持</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step">
+    <div class="step-label">Step 1: ニュース収集</div>
+    <div class="step-desc">claude -p + Brave/Tavily MCP (Sonnetモデル)<br>Budget: $5.00 | 出力: news_raw_output.txt</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-branch">
+    <div>
+      <div class="wf-branch-label">成功</div>
+      <div class="wf-step" style="min-width:200px">
+        <div class="step-label">Step 1.5: JSON抽出</div>
+        <div class="step-desc">jq直接パース or Python正規表現<br>コードフェンス除去 &rarr; news_raw.json</div>
+      </div>
+    </div>
+    <div>
+      <div class="wf-branch-label">失敗</div>
+      <div class="wf-step danger" style="min-width:200px">
+        <div class="step-label">フォールバック</div>
+        <div class="step-desc">前日のnews_raw.jsonをコピー<br>前日データもなし &rarr; 終了</div>
+      </div>
+    </div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step">
+    <div class="step-label">Step 2: レポート生成</div>
+    <div class="step-desc">generate.py --json news_raw.json --date DATE<br>HTML + PPTX + Notion 同時生成</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step">
+    <div class="step-label">Step 3: GitHub Pages push</div>
+    <div class="step-desc">git add (index.html, report.pptx, charts/) &rarr; commit &rarr; push<br>失敗時: WARNINGログのみ（レポート生成は完了済み）</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step">
+    <div class="step-label">Step 4: 結果確認</div>
+    <div class="step-desc">HTML/PPTXファイル存在チェック &rarr; ログ出力</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step">
+    <div class="step-label">Step 5: ローカルクリーンアップ</div>
+    <div class="step-desc">7日以上前の output/YYYY-MM-DD/ を削除</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step success">
+    <div class="step-label">Step 6: ログクリーンアップ &amp; 完了</div>
+    <div class="step-desc">30日超のログ削除 &rarr; "自動生成完了" ログ出力</div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<h2 class="section-title" id="wf-generate">2. generate.py 内部ワークフロー</h2>
+<div class="card mb-4">
+<div class="card-header">Pythonレポート生成パイプライン</div>
+<div class="card-body">
+<div class="wf-container">
+
+  <div class="wf-step primary">
+    <div class="step-label">入力: JSON (--json / --sample / --stdin)</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step">
+    <div class="step-label">news_parser.parse_news_json()</div>
+    <div class="step-desc">正規化 &rarr; 重複排除 &rarr; 重要度ソート &rarr; DailyReport構築<br>企業/カテゴリ件数集計, キーワード抽出, 関連性マッピング</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-branch">
+    <div>
+      <div class="wf-step" style="min-width:180px">
+        <div class="step-label">matplotlib<br>チャート生成</div>
+        <div class="step-desc">PNG (PPTX用)<br>棒グラフ, レーダー, タイムライン</div>
+      </div>
+    </div>
+    <div>
+      <div class="wf-step" style="min-width:180px">
+        <div class="step-label">Plotly<br>チャート生成</div>
+        <div class="step-desc">HTMLスニペット<br>6種インタラクティブ</div>
+      </div>
+    </div>
+    <div>
+      <div class="wf-step" style="min-width:180px">
+        <div class="step-label">図解/インフォグラフィック<br>生成</div>
+        <div class="step-desc">記事別SVG/HTML<br>サイドバー+詳細</div>
+      </div>
+    </div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-branch">
+    <div>
+      <div class="wf-step" style="min-width:200px">
+        <div class="step-label">HTML生成</div>
+        <div class="step-desc">Jinja2 + Bootstrap 5<br>比較データJSON読込<br>6タブ レスポンシブ</div>
+      </div>
+    </div>
+    <div>
+      <div class="wf-step" style="min-width:200px">
+        <div class="step-label">PPTX生成</div>
+        <div class="step-desc">python-pptx<br>テンプレートベース<br>5-10スライド</div>
+      </div>
+    </div>
+    <div>
+      <div class="wf-step" style="min-width:200px">
+        <div class="step-label">Notion投稿</div>
+        <div class="step-desc">REST API<br>DB作成/ページ投稿<br>PPTX添付+カバー画像</div>
+      </div>
+    </div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step success">
+    <div class="step-label">出力: output/YYYY-MM-DD/ (index.html, report.pptx, charts/)</div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<h2 class="section-title" id="wf-notion">3. Notion投稿ワークフロー</h2>
+<div class="card mb-4">
+<div class="card-header">notion_publisher.py 投稿フロー</div>
+<div class="card-body">
+<div class="wf-container">
+
+  <div class="wf-step primary">
+    <div class="step-label">publish_report() 開始</div>
+    <div class="step-desc">NOTION_TOKEN + WORKSPACE_PAGE_ID 環境変数チェック</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step">
+    <div class="step-label">ensure_database()</div>
+    <div class="step-desc">Search API で "AI News Daily Deck" DB検索<br>未存在なら10プロパティ付きDB新規作成</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-branch">
+    <div>
+      <div class="wf-step" style="min-width:190px">
+        <div class="step-label">カバー画像生成</div>
+        <div class="step-desc">matplotlib &rarr; PNG<br>日付 + Top3ニュース</div>
+      </div>
+    </div>
+    <div>
+      <div class="wf-step" style="min-width:190px">
+        <div class="step-label">ファイルアップロード</div>
+        <div class="step-desc">File Upload API (3step)<br>PPTX + カバー画像</div>
+      </div>
+    </div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step">
+    <div class="step-label">ページ構築・投稿</div>
+    <div class="step-desc">DBプロパティ設定 (日付,企業,カテゴリ,件数,重要度,要約...)<br>ブロック生成 (目次, サマリー, ファイル, KT, ハイライト, ニュース全件, 企業比較, 世界/日本, ソース)<br>100件ずつバッチ投稿</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step success">
+    <div class="step-label">Notion URL 返却</div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<h2 class="section-title" id="wf-error">4. エラーハンドリング方針</h2>
+<table class="table table-bordered spec-table">
+<thead><tr><th>ステップ</th><th>失敗時の挙動</th><th>後続処理</th></tr></thead>
+<tbody>
+<tr><td>Step 0: 比較データ更新</td><td>既存 ai_comparison.json を維持</td><td>Step 1以降を通常実行</td></tr>
+<tr><td>Step 1: ニュース収集</td><td>前日の news_raw.json をコピー</td><td>前日データでレポート生成</td></tr>
+<tr><td>Step 1: フォールバックも失敗</td><td>exit 1</td><td>全処理中止</td></tr>
+<tr><td>Step 2: チャート生成失敗</td><td>前日のチャートPNGを自動コピー（フォールバック）、失敗時はgeneration_errorsに記録</td><td>HTML/PPTXは生成（フォールバックチャート使用）</td></tr>
+<tr><td>Step 2: HTML生成失敗</td><td>generation_errorsに記録</td><td>PPTX/Notion生成は続行</td></tr>
+<tr><td>Step 2: PPTX生成失敗</td><td>generation_errorsに記録</td><td>HTMLが成功していれば正常終了</td></tr>
+<tr><td>Step 2: Notion投稿失敗</td><td>WARNINGログ出力</td><td>HTML/PPTXが成功していれば正常終了</td></tr>
+<tr><td>Step 3: GitHub push失敗</td><td>WARNINGログ出力</td><td>ローカルにレポートは残る</td></tr>
+</tbody>
+</table>
+
+</div>
+
+<!-- ===================== TAB 6: インフラ・運用 ===================== -->
+<div class="tab-pane fade" id="tab-infra">
+
+<h2 class="section-title" id="infra-env">1. 実行環境</h2>
+<table class="table table-bordered spec-table">
+<thead><tr><th>項目</th><th>値</th></tr></thead>
+<tbody>
+<tr><td>OS</td><td>Linux (WSL2) - kernel 6.6.87.2-microsoft-standard-WSL2</td></tr>
+<tr><td>Python</td><td>3.x</td></tr>
+<tr><td>Node.js</td><td>v22.15.1 (nvm管理, claude CLI依存)</td></tr>
+<tr><td>Claude CLI</td><td>Claude Code Pro サブスクリプション</td></tr>
+<tr><td>日本語フォント</td><td>IPAGothic (/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf)</td></tr>
+<tr><td>プロジェクトパス</td><td>/root/claude-project/ai-news-deck/</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="infra-cron">2. cron設定・自動実行パイプライン</h2>
+
+<!-- crontab エントリ -->
+<div class="card mb-3">
+<div class="card-header">crontabエントリ</div>
+<div class="card-body">
+<pre class="mb-2" style="font-size:0.85rem;background:#f8f9fa;padding:12px;border-radius:6px"><code>0 7 * * * /root/claude-project/ai-news-deck/automation/run-daily.sh >> /root/claude-project/ai-news-deck/logs/cron.log 2>&1</code></pre>
+<p class="mb-0 text-muted" style="font-size:0.82rem">登録方法: <code>bash automation/cron_setup.sh</code> | 確認: <code>crontab -l | grep run-daily</code></p>
+</div>
+</div>
+
+<!-- run-daily.sh パイプライン詳細 -->
+<div class="card mb-3">
+<div class="card-header">run-daily.sh パイプライン（Step 0-6）</div>
+<div class="card-body">
+<table class="table table-sm spec-table mb-0">
+<thead><tr><th style="width:80px">Step</th><th style="width:120px">タイミング</th><th>処理内容</th><th style="width:140px">使用ツール</th><th style="width:160px">失敗時</th></tr></thead>
+<tbody>
+<tr><td><strong>0</strong></td><td>月曜日のみ</td><td>AI比較データ週次更新。<code>claude -p</code>でWebSearchし、<code>ai_comparison.json</code>を更新</td><td>claude -p (sonnet, $2.00上限)</td><td>既存JSONを維持、Step 1へ続行</td></tr>
+<tr><td><strong>1</strong></td><td>毎日</td><td>ニュース収集。<code>claude -p</code>で直近24-48時間のAIニュースを検索・分析・JSON出力</td><td>claude -p (sonnet, $5.00上限)<br>Brave/Tavily MCP</td><td>前日の<code>news_raw.json</code>をコピーして続行</td></tr>
+<tr><td><strong>1.5</strong></td><td>毎日</td><td>Claude出力からJSON抽出。コードフェンス除去、JSONバリデーション</td><td>jq, Python (正規表現)</td><td>exit 1（全処理中止）</td></tr>
+<tr><td><strong>2</strong></td><td>毎日</td><td>レポート生成。<code>generate.py --json</code>でHTML + PPTX + Notion投稿</td><td>Python (generate.py)</td><td>exit 1（全処理中止）</td></tr>
+<tr><td><strong>3</strong></td><td>毎日</td><td>GitHub Pagesへpush。HTML + PPTX + chartsをコミット&プッシュ</td><td>git</td><td>WARNING（ローカルにレポートは残る）</td></tr>
+<tr><td><strong>4</strong></td><td>毎日</td><td>結果確認。HTML/PPTXファイル存在チェック、ログ出力</td><td>bash</td><td>-</td></tr>
+<tr><td><strong>5</strong></td><td>毎日</td><td>出力クリーンアップ。7日以上前の<code>output/YYYY-MM-DD/</code>を削除</td><td>bash (date計算)</td><td>スキップ（次回に再試行）</td></tr>
+<tr><td><strong>6</strong></td><td>毎日</td><td>ログクリーンアップ。30日以上前の<code>*.log</code>を削除</td><td>find -mtime</td><td>スキップ</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- 環境設定の注意点 -->
+<div class="card mb-3">
+<div class="card-header">cron環境の注意点</div>
+<div class="card-body">
+<table class="table table-sm spec-table mb-0">
+<thead><tr><th style="width:180px">項目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td><strong>PATH設定</strong></td><td>cron実行時はシェルのPATHが最小限。<code>run-daily.sh</code>冒頭で<code>export PATH="/root/.nvm/versions/node/v22.15.1/bin:$PATH"</code>を明示設定し、<code>claude</code>コマンドを認識させる</td></tr>
+<tr><td><strong>環境変数</strong></td><td><code>NOTION_TOKEN</code>と<code>NOTION_WORKSPACE_PAGE_ID</code>は<code>run-daily.sh</code>内でexport。<code>~/.bashrc</code>等はcronでは読まれない</td></tr>
+<tr><td><strong>MCP APIキー</strong></td><td>Brave Search / Tavily のAPIキーは<code>~/.claude.json</code>のMCP設定に格納。<code>claude -p</code>起動時に自動読込</td></tr>
+<tr><td><strong>set -euo pipefail</strong></td><td>未定義変数参照・パイプ失敗時に即座にexit。意図しないサイレント失敗を防止</td></tr>
+<tr><td><strong>claude -p オプション</strong></td><td><code>--allowedTools "WebSearch,WebFetch"</code>（使用ツール制限）、<code>--permission-mode acceptEdits</code>（非対話許可）、<code>--model sonnet</code>（モデル指定）、<code>--max-budget-usd</code>（コスト上限）</td></tr>
+<tr><td><strong>WSL2固有</strong></td><td>WSL2のcronは<code>sudo service cron start</code>で手動起動が必要。Windows再起動後も再起動必要。<code>cron_setup.sh</code>が自動確認</td></tr>
+<tr><td><strong>タイムゾーン</strong></td><td>JST (UTC+9) を前提。<code>date</code>コマンドのTZを確認: <code>timedatectl</code> または <code>echo $TZ</code></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- 手動実行 -->
+<div class="card mb-3">
+<div class="card-header">手動実行・テスト方法</div>
+<div class="card-body">
+<pre class="mb-0" style="font-size:0.85rem;background:#f8f9fa;padding:12px;border-radius:6px"><code># フルパイプライン手動実行（本番と同じ動作）
+bash automation/run-daily.sh
+
+# サンプルデータでレポート生成のみテスト（ニュース収集なし）
+python3 generate.py --sample
+
+# 既存JSONから再生成（日付指定）
+python3 generate.py --json output/2026-02-11/news_raw.json --date 2026-02-11
+
+# cron登録・状態確認
+bash automation/cron_setup.sh
+crontab -l | grep run-daily
+
+# cronサービスが起動しているか確認（WSL2）
+service cron status</code></pre>
+</div>
+</div>
+
+<h2 class="section-title" id="infra-secrets">3. 環境変数・シークレット</h2>
+<table class="table table-bordered spec-table">
+<thead><tr><th>変数</th><th>用途</th><th>設定場所</th></tr></thead>
+<tbody>
+<tr><td><code>NOTION_TOKEN</code></td><td>Notion API認証</td><td>run-daily.sh (export)</td></tr>
+<tr><td><code>NOTION_WORKSPACE_PAGE_ID</code></td><td>Notionワークスペースページ</td><td>run-daily.sh (export)</td></tr>
+<tr><td>Brave Search APIキー</td><td>ニュース検索</td><td>~/.claude.json (MCP設定)</td></tr>
+<tr><td>Tavily APIキー</td><td>記事詳細抽出</td><td>~/.claude.json (MCP設定)</td></tr>
+<tr><td>GitHub SSH Key</td><td>git push認証</td><td>~/.ssh/</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="infra-cost">4. コスト見積もり</h2>
+<table class="table table-bordered spec-table">
+<thead><tr><th>リソース</th><th>月間使用量</th><th>無料枠</th><th>追加コスト</th></tr></thead>
+<tbody>
+<tr><td>Claude Code Pro</td><td>~30回/月 (claude -p)</td><td>サブスク内</td><td>$0</td></tr>
+<tr><td>Brave Search</td><td>~300回/月 (10回/日 x 30日)</td><td>2,000回/月</td><td>$0</td></tr>
+<tr><td>Tavily</td><td>~120回/月 (4回/日 x 30日)</td><td>1,000回/月</td><td>$0</td></tr>
+<tr><td>GitHub Pages</td><td>~900MB/月 (30日 x ~30MB)</td><td>1GB</td><td>$0</td></tr>
+<tr><td>Notion API</td><td>~30ページ/月</td><td>統合トークン無制限</td><td>$0</td></tr>
+<tr style="font-weight:700;background:#E8F5E9"><td>合計</td><td colspan="2"></td><td>$0/月</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="infra-retention">5. データ保持ポリシー</h2>
+<table class="table table-bordered spec-table">
+<thead><tr><th>データ</th><th>保存先</th><th>保持期間</th><th>削除方法</th></tr></thead>
+<tbody>
+<tr><td>ローカル出力 (HTML/PPTX/charts)</td><td>output/YYYY-MM-DD/</td><td>7日</td><td>run-daily.sh Step 5 (自動)</td></tr>
+<tr><td>実行ログ</td><td>logs/*.log</td><td>30日</td><td>run-daily.sh Step 6 (自動)</td></tr>
+<tr><td>HTMLレポート (公開)</td><td>GitHub Pages</td><td>無期限</td><td>手動 (git rm)</td></tr>
+<tr><td>Notionページ</td><td>Notion DB</td><td>無期限</td><td>手動 (Notion UI)</td></tr>
+<tr><td>比較データ</td><td>data/ai_comparison.json</td><td>次回更新まで</td><td>上書き更新 (週次)</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="infra-monitor">6. 監視・トラブルシューティング</h2>
+<div class="row g-3">
+<div class="col-md-6">
+<div class="card h-100">
+<div class="card-header">ログファイル</div>
+<div class="card-body">
+<ul class="mb-0" style="font-size:0.88rem">
+<li><code>logs/YYYY-MM-DD.log</code> - Python generate.py ログ</li>
+<li><code>logs/YYYY-MM-DD_automation.log</code> - run-daily.sh ログ</li>
+<li><code>logs/cron.log</code> - cron標準出力/エラー</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card h-100">
+<div class="card-header">確認コマンド</div>
+<div class="card-body">
+<pre class="mb-0" style="font-size:0.82rem;background:#f8f9fa;padding:10px;border-radius:6px"><code># 最新ログ確認
+tail -50 logs/*_automation.log
+
+# cron登録確認
+crontab -l | grep run-daily
+
+# 手動テスト実行
+python3 generate.py --sample
+
+# ニュース収集テスト
+bash automation/run-daily.sh</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+</div><!-- /tab-content -->
+</div><!-- /container -->
+
+<!-- Footer -->
+<div class="border-top mt-5 py-4" style="background:#fff">
+<div class="container text-center text-muted" style="font-size:0.82rem">
+  AI News Daily Deck - 設計仕様書・要件定義書 | Version 1.0 | 2026-02-10
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

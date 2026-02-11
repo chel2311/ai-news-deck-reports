@@ -146,7 +146,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tbody>
 <tr><td><span class="req-id">FR-01</span></td><td>Brave Search / Tavily MCPを使用し、直近24-48時間のAIニュースを8-12件収集する</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-02</span></td><td>対象企業: OpenAI, Anthropic, Google/DeepMind, Microsoft, Meta</td><td class="req-priority-high">高</td><td>完了</td></tr>
-<tr><td><span class="req-id">FR-03</span></td><td>対象カテゴリ: LLM, Image, Video, Robotics, Policy, Business, Protocol</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-03</span></td><td>対象カテゴリ: LLM, Image, Video, Robotics, Policy, Business, Protocol, Infrastructure</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-04</span></td><td>各ニュースに重要度(1-5)、6項目の深掘り分析、図解データを付与</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-05</span></td><td>世界市場動向分析・日本市場考察・アクションアイテムを生成</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-06</span></td><td>企業間比較・トレンド洞察・ニュース間関連性を構造化データで出力</td><td class="req-priority-mid">中</td><td>完了</td></tr>
@@ -190,6 +190,10 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><span class="req-id">FR-35</span></td><td>チャート生成失敗時の前日チャートPNG自動フォールバック</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-36</span></td><td>比較データタブに更新日（ファイル更新日時）を表示</td><td class="req-priority-low">低</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-37</span></td><td>ニュース収集プロンプトv2: 日本語ソース追加、分析200字化、尻切れ防止ルール</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-38</span></td><td>エラー通知: 各ステップ失敗時にNotionデータベースへエラーページ自動投稿。EXIT trapで予期せぬ終了もカバー</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-39</span></td><td>Notionスキーマ自動修復: DBプロパティ名の変更を自動検知し、タイプベースマッチングでマッピング生成</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-40</span></td><td>インフラ深掘り分析: 資金調達ニュースの裏側にあるGPU需要・データセンター・電力消費を構造的に考察</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-41</span></td><td>Notionサムネイル v3: Pillow(PIL)ベース、白背景1200x630px、トップ3ニュース+KPI+企業色凡例。テキスト自動折り返し対応</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 </tbody>
 </table>
 
@@ -619,9 +623,9 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div id="mod4" class="accordion-collapse collapse" data-bs-parent="#moduleAccordion">
 <div class="accordion-body">
 <table class="table table-sm spec-table">
-<tr><th style="width:140px">DB管理</th><td><code>ensure_database()</code> - "AI News Daily Deck"データベースを検索/作成。プロパティ: 名前、日付、企業(multi_select)、カテゴリ、件数、重要度、要約、ハイライト、URL、サムネイル</td></tr>
+<tr><th style="width:140px">DB管理</th><td><code>ensure_database()</code> - "AI News Daily Deck"データベースを検索/作成。<code>tuple[str, dict]</code>を返し、プロパティ名マッピングを含む。<code>_resolve_property_mapping()</code>でスキーマ差異を自動修復（Phase 1: 名前完全一致 → Phase 2: タイプベース推定）</td></tr>
 <tr><th>ファイルアップロード</th><td>3ステップ: File Uploadオブジェクト作成 → バイナリ送信 → ページ添付。PPTX + カバー画像を添付</td></tr>
-<tr><th>カバー画像</th><td><code>generate_cover_image()</code> - matplotlibで日付・トップ3ニュース・統計を含むギャラリービュー用PNG自動生成</td></tr>
+<tr><th>カバー画像</th><td><code>generate_cover_image()</code> - Pillow(PIL)で白背景1200x630pxのサムネイルPNG生成。トップ3ニュース（自動折り返し）、KPI 4個、企業色凡例付き</td></tr>
 <tr><th>ブロック構築</th><td>目次、コールアウト、見出し、テーブル、トグル、ブックマーク、引用等のNotionブロックをプログラマティックに生成。100件ずつバッチ投稿</td></tr>
 <tr><th>図解レンダリング</th><td>6種類のdiagram_dataをNotion互換ブロック（テキストバー、テーブル、箇条書き等）に変換</td></tr>
 </table>
@@ -882,10 +886,10 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <thead><tr><th style="width:80px">Step</th><th style="width:120px">タイミング</th><th>処理内容</th><th style="width:140px">使用ツール</th><th style="width:160px">失敗時</th></tr></thead>
 <tbody>
 <tr><td><strong>0</strong></td><td>月曜日のみ</td><td>AI比較データ週次更新。<code>claude -p</code>でWebSearchし、<code>ai_comparison.json</code>を更新</td><td>claude -p (sonnet, $2.00上限)</td><td>既存JSONを維持、Step 1へ続行</td></tr>
-<tr><td><strong>1</strong></td><td>毎日</td><td>ニュース収集。<code>claude -p</code>で直近24-48時間のAIニュースを検索・分析・JSON出力</td><td>claude -p (sonnet, $5.00上限)<br>Brave/Tavily MCP</td><td>前日の<code>news_raw.json</code>をコピーして続行</td></tr>
-<tr><td><strong>1.5</strong></td><td>毎日</td><td>Claude出力からJSON抽出。コードフェンス除去、JSONバリデーション</td><td>jq, Python (正規表現)</td><td>exit 1（全処理中止）</td></tr>
-<tr><td><strong>2</strong></td><td>毎日</td><td>レポート生成。<code>generate.py --json</code>でHTML + PPTX + Notion投稿</td><td>Python (generate.py)</td><td>exit 1（全処理中止）</td></tr>
-<tr><td><strong>3</strong></td><td>毎日</td><td>GitHub Pagesへpush。HTML + PPTX + chartsをコミット&プッシュ</td><td>git</td><td>WARNING（ローカルにレポートは残る）</td></tr>
+<tr><td><strong>1</strong></td><td>毎日</td><td>ニュース収集。<code>claude -p</code>で直近24-48時間のAIニュースを検索・分析・JSON出力</td><td>claude -p (sonnet, $5.00上限)<br>Brave/Tavily MCP</td><td>前日の<code>news_raw.json</code>をコピーして続行 + Notionエラー通知</td></tr>
+<tr><td><strong>1.5</strong></td><td>毎日</td><td>Claude出力からJSON抽出。コードフェンス除去、JSONバリデーション</td><td>jq, Python (正規表現)</td><td>exit 1 + EXIT trap経由でNotionエラー通知</td></tr>
+<tr><td><strong>2</strong></td><td>毎日</td><td>レポート生成。<code>generate.py --json</code>でHTML + PPTX + Notion投稿</td><td>Python (generate.py)</td><td>exit 1 + EXIT trap経由でNotionエラー通知</td></tr>
+<tr><td><strong>3</strong></td><td>毎日</td><td>GitHub Pagesへpush。HTML + PPTX + chartsをコミット&プッシュ</td><td>git</td><td>WARNING + Notionエラー通知（レポートは残る）</td></tr>
 <tr><td><strong>4</strong></td><td>毎日</td><td>結果確認。HTML/PPTXファイル存在チェック、ログ出力</td><td>bash</td><td>-</td></tr>
 <tr><td><strong>5</strong></td><td>毎日</td><td>出力クリーンアップ。7日以上前の<code>output/YYYY-MM-DD/</code>を削除</td><td>bash (date計算)</td><td>スキップ（次回に再試行）</td></tr>
 <tr><td><strong>6</strong></td><td>毎日</td><td>ログクリーンアップ。30日以上前の<code>*.log</code>を削除</td><td>find -mtime</td><td>スキップ</td></tr>

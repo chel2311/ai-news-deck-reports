@@ -48,7 +48,7 @@ body {
    ================================================ */
 .deck-container {
     width: 100%;
-    max-width: 1600px;    /* デフォルト: ワイドPC向け */
+    max-width: 100%;      /* デフォルト: フル幅 */
     margin: 0 auto;
     padding: 0 var(--container-pad);
 }
@@ -339,7 +339,7 @@ body {
 
 /* PC (1025px - 1599px) */
 @media (min-width: 1025px) and (max-width: 1599px) {
-    .deck-container { max-width: 92%; }
+    .deck-container { max-width: 96%; }
     .sources-section ul { columns: 2; }
 
     .device-indicator::after { content: 'PC'; }
@@ -347,7 +347,7 @@ body {
 
 /* ワイドPC (>= 1600px) */
 @media (min-width: 1600px) {
-    .deck-container { max-width: 1560px; }
+    .deck-container { max-width: 96%; }
     .sources-section ul { columns: 3; }
     .analysis-grid { grid-template-columns: repeat(3, 1fr); }
 

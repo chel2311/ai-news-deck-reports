@@ -194,8 +194,10 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><span class="req-id">FR-39</span></td><td>Notionスキーマ自動修復: DBプロパティ名の変更を自動検知し、タイプベースマッチングでマッピング生成</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-40</span></td><td>インフラ深掘り分析: 資金調達ニュースの裏側にあるGPU需要・データセンター・電力消費を構造的に考察</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-41</span></td><td>Notionサムネイル v3: Pillow(PIL)ベース、白背景1200x630px、トップ3ニュース+KPI+企業色凡例。テキスト自動折り返し対応</td><td class="req-priority-mid">中</td><td>完了</td></tr>
-<tr><td><span class="req-id">FR-42</span></td><td>Notion記事構造改善: heading_1/2/3階層、各ニュースtoggle化、空白余白、ソースtoggle収納、PPTXをDBプロパティ「PPTX」に移動</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-42</span></td><td>Notion記事構造改善: heading_1/2/3階層、各ニュースtoggle化、空白余白、ソースtoggle収納、PPTXをDBプロパティ「pptx」に移動</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-43</span></td><td>規格/プロトコル一覧を発表日降順（最新が上）でソート。HTML・PPTX・Notion全出力に適用</td><td class="req-priority-low">低</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-44</span></td><td>Notion重複投稿防止: 同日ページ存在時に自動アーカイブしてから新規作成。property_map対応</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-45</span></td><td>news_raw.jsonをGitHub Pagesリポジトリにも保存。過去データの再生成を常に可能にする</td><td class="req-priority-low">低</td><td>完了</td></tr>
 </tbody>
 </table>
 
@@ -802,7 +804,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 
   <div class="wf-step">
     <div class="step-label">ensure_database()</div>
-    <div class="step-desc">Search API で "AI News Daily Deck" DB検索<br>未存在なら10プロパティ付きDB新規作成</div>
+    <div class="step-desc">Search API で "AI News Daily Deck" DB検索<br>未存在なら11プロパティ付きDB新規作成（pptx filesプロパティ含む）</div>
   </div>
   <div class="wf-arrow"></div>
 
@@ -823,8 +825,14 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
   <div class="wf-arrow"></div>
 
   <div class="wf-step">
+    <div class="step-label">重複チェック</div>
+    <div class="step-desc">同日ページをDB Query APIで検索<br>存在すれば自動アーカイブ（重複防止）</div>
+  </div>
+  <div class="wf-arrow"></div>
+
+  <div class="wf-step">
     <div class="step-label">ページ構築・投稿</div>
-    <div class="step-desc">DBプロパティ設定 (日付,企業,カテゴリ,件数,重要度,要約,PPTX...)<br>ブロック生成 (heading_1タイトル, サマリー, KT, ハイライト直接展開, ニュースtoggle, 企業比較, 世界/日本, レポートファイル, ソースtoggle)<br>100件ずつバッチ投稿</div>
+    <div class="step-desc">DBプロパティ設定 (日付,企業,カテゴリ,件数,重要度,要約,pptx...)<br>ブロック生成 (heading_1タイトル, サマリー, KT, ハイライト直接展開, ニュースtoggle, 企業比較, 世界/日本, レポートファイル, ソースtoggle)<br>100件ずつバッチ投稿</div>
   </div>
   <div class="wf-arrow"></div>
 

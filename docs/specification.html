@@ -851,11 +851,75 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 </tbody>
 </table>
 
-<h2 class="section-title" id="infra-cron">2. cron設定</h2>
-<div class="card mb-4">
+<h2 class="section-title" id="infra-cron">2. cron設定・自動実行パイプライン</h2>
+
+<!-- crontab エントリ -->
+<div class="card mb-3">
+<div class="card-header">crontabエントリ</div>
 <div class="card-body">
-<pre class="mb-0" style="font-size:0.85rem;background:#f8f9fa;padding:12px;border-radius:6px"><code>0 7 * * * PATH=/root/.nvm/versions/node/v22.15.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin /root/claude-project/ai-news-deck/automation/run-daily.sh >> /root/claude-project/ai-news-deck/logs/cron.log 2>&1</code></pre>
-<p class="mt-2 mb-0 text-muted" style="font-size:0.82rem">登録方法: <code>bash automation/cron_setup.sh</code></p>
+<pre class="mb-2" style="font-size:0.85rem;background:#f8f9fa;padding:12px;border-radius:6px"><code>0 7 * * * /root/claude-project/ai-news-deck/automation/run-daily.sh >> /root/claude-project/ai-news-deck/logs/cron.log 2>&1</code></pre>
+<p class="mb-0 text-muted" style="font-size:0.82rem">登録方法: <code>bash automation/cron_setup.sh</code> | 確認: <code>crontab -l | grep run-daily</code></p>
+</div>
+</div>
+
+<!-- run-daily.sh パイプライン詳細 -->
+<div class="card mb-3">
+<div class="card-header">run-daily.sh パイプライン（Step 0-6）</div>
+<div class="card-body">
+<table class="table table-sm spec-table mb-0">
+<thead><tr><th style="width:80px">Step</th><th style="width:120px">タイミング</th><th>処理内容</th><th style="width:140px">使用ツール</th><th style="width:160px">失敗時</th></tr></thead>
+<tbody>
+<tr><td><strong>0</strong></td><td>月曜日のみ</td><td>AI比較データ週次更新。<code>claude -p</code>でWebSearchし、<code>ai_comparison.json</code>を更新</td><td>claude -p (sonnet, $2.00上限)</td><td>既存JSONを維持、Step 1へ続行</td></tr>
+<tr><td><strong>1</strong></td><td>毎日</td><td>ニュース収集。<code>claude -p</code>で直近24-48時間のAIニュースを検索・分析・JSON出力</td><td>claude -p (sonnet, $5.00上限)<br>Brave/Tavily MCP</td><td>前日の<code>news_raw.json</code>をコピーして続行</td></tr>
+<tr><td><strong>1.5</strong></td><td>毎日</td><td>Claude出力からJSON抽出。コードフェンス除去、JSONバリデーション</td><td>jq, Python (正規表現)</td><td>exit 1（全処理中止）</td></tr>
+<tr><td><strong>2</strong></td><td>毎日</td><td>レポート生成。<code>generate.py --json</code>でHTML + PPTX + Notion投稿</td><td>Python (generate.py)</td><td>exit 1（全処理中止）</td></tr>
+<tr><td><strong>3</strong></td><td>毎日</td><td>GitHub Pagesへpush。HTML + PPTX + chartsをコミット&プッシュ</td><td>git</td><td>WARNING（ローカルにレポートは残る）</td></tr>
+<tr><td><strong>4</strong></td><td>毎日</td><td>結果確認。HTML/PPTXファイル存在チェック、ログ出力</td><td>bash</td><td>-</td></tr>
+<tr><td><strong>5</strong></td><td>毎日</td><td>出力クリーンアップ。7日以上前の<code>output/YYYY-MM-DD/</code>を削除</td><td>bash (date計算)</td><td>スキップ（次回に再試行）</td></tr>
+<tr><td><strong>6</strong></td><td>毎日</td><td>ログクリーンアップ。30日以上前の<code>*.log</code>を削除</td><td>find -mtime</td><td>スキップ</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- 環境設定の注意点 -->
+<div class="card mb-3">
+<div class="card-header">cron環境の注意点</div>
+<div class="card-body">
+<table class="table table-sm spec-table mb-0">
+<thead><tr><th style="width:180px">項目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td><strong>PATH設定</strong></td><td>cron実行時はシェルのPATHが最小限。<code>run-daily.sh</code>冒頭で<code>export PATH="/root/.nvm/versions/node/v22.15.1/bin:$PATH"</code>を明示設定し、<code>claude</code>コマンドを認識させる</td></tr>
+<tr><td><strong>環境変数</strong></td><td><code>NOTION_TOKEN</code>と<code>NOTION_WORKSPACE_PAGE_ID</code>は<code>run-daily.sh</code>内でexport。<code>~/.bashrc</code>等はcronでは読まれない</td></tr>
+<tr><td><strong>MCP APIキー</strong></td><td>Brave Search / Tavily のAPIキーは<code>~/.claude.json</code>のMCP設定に格納。<code>claude -p</code>起動時に自動読込</td></tr>
+<tr><td><strong>set -euo pipefail</strong></td><td>未定義変数参照・パイプ失敗時に即座にexit。意図しないサイレント失敗を防止</td></tr>
+<tr><td><strong>claude -p オプション</strong></td><td><code>--allowedTools "WebSearch,WebFetch"</code>（使用ツール制限）、<code>--permission-mode acceptEdits</code>（非対話許可）、<code>--model sonnet</code>（モデル指定）、<code>--max-budget-usd</code>（コスト上限）</td></tr>
+<tr><td><strong>WSL2固有</strong></td><td>WSL2のcronは<code>sudo service cron start</code>で手動起動が必要。Windows再起動後も再起動必要。<code>cron_setup.sh</code>が自動確認</td></tr>
+<tr><td><strong>タイムゾーン</strong></td><td>JST (UTC+9) を前提。<code>date</code>コマンドのTZを確認: <code>timedatectl</code> または <code>echo $TZ</code></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- 手動実行 -->
+<div class="card mb-3">
+<div class="card-header">手動実行・テスト方法</div>
+<div class="card-body">
+<pre class="mb-0" style="font-size:0.85rem;background:#f8f9fa;padding:12px;border-radius:6px"><code># フルパイプライン手動実行（本番と同じ動作）
+bash automation/run-daily.sh
+
+# サンプルデータでレポート生成のみテスト（ニュース収集なし）
+python3 generate.py --sample
+
+# 既存JSONから再生成（日付指定）
+python3 generate.py --json output/2026-02-11/news_raw.json --date 2026-02-11
+
+# cron登録・状態確認
+bash automation/cron_setup.sh
+crontab -l | grep run-daily
+
+# cronサービスが起動しているか確認（WSL2）
+service cron status</code></pre>
 </div>
 </div>
 

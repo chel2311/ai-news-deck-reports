@@ -502,7 +502,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
   <span class="df-arrow-r">&rarr;</span>
   <div class="df-node">pptx_generator</div>
   <span class="df-arrow-r">&rarr;</span>
-  <div class="df-node store">report.pptx</div>
+  <div class="df-node store">report_YYYY-MM-DD.pptx</div>
 </div>
 <div class="df-row ms-3">
   <div class="df-node process">DailyReport</div>
@@ -565,7 +565,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">cron_setup.sh</span> <span class="comment"># cron登録ヘルパー</span>
 <br>&nbsp;&nbsp;<span class="dir">output/</span> <span class="comment"># 日付別出力 (7日保持)</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">YYYY-MM-DD/</span>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">index.html</span>, <span class="file">report.pptx</span>, <span class="dir">charts/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">index.html</span>, <span class="file">report_YYYY-MM-DD.pptx</span>, <span class="dir">charts/</span>
 <br>&nbsp;&nbsp;<span class="dir">logs/</span> <span class="comment"># 実行ログ (30日保持)</span>
 <br>&nbsp;&nbsp;<span class="dir">docs/</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">specification.html</span> <span class="comment"># 本ドキュメント</span>
@@ -698,7 +698,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 
   <div class="wf-step">
     <div class="step-label">Step 3: GitHub Pages push</div>
-    <div class="step-desc">git add (index.html, report.pptx, charts/) &rarr; commit &rarr; push<br>失敗時: WARNINGログのみ（レポート生成は完了済み）</div>
+    <div class="step-desc">git add (index.html, report_YYYY-MM-DD.pptx, charts/) &rarr; commit &rarr; push<br>失敗時: WARNINGログのみ（レポート生成は完了済み）</div>
   </div>
   <div class="wf-arrow"></div>
 
@@ -785,7 +785,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
   <div class="wf-arrow"></div>
 
   <div class="wf-step success">
-    <div class="step-label">出力: output/YYYY-MM-DD/ (index.html, report.pptx, charts/)</div>
+    <div class="step-label">出力: output/YYYY-MM-DD/ (index.html, report_YYYY-MM-DD.pptx, charts/)</div>
   </div>
 
 </div>

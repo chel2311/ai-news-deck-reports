@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生成AI基礎ガイド - AI News Daily Deck</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --corp: #005BAB;
+      --corp-light: #5BA4D9;
+      --corp-dark: #003D73;
+      --accent: #F0961C;
+      --text-dark: #231815;
+      --bg-light: #F8FAFB;
+    }
+    body {
+      font-family: 'Meiryo','Hiragino Sans',sans-serif;
+      color: var(--text-dark);
+      background: var(--bg-light);
+    }
+    .doc-header {
+      background: linear-gradient(135deg, var(--corp-dark), var(--corp));
+      color: #fff;
+      padding: 3rem 0;
+    }
+    .doc-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .doc-header .subtitle {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.95rem;
+    }
+    .badge-ver {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .nav-pills .nav-link {
+      color: var(--corp);
+      border-radius: 0;
+      border-bottom: 3px solid transparent;
+      background: none;
+      font-weight: 600;
+    }
+    .nav-pills .nav-link.active {
+      color: var(--corp-dark);
+      border-bottom-color: var(--accent);
+      background: rgba(0,91,171,0.06);
+    }
+    .nav-pills .nav-link:hover {
+      background: rgba(0,91,171,0.03);
+    }
+    .section-title {
+      color: var(--corp-dark);
+      font-weight: 700;
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+      margin: 2rem 0 1rem;
+      font-size: 1.4rem;
+    }
+    .subsection-title {
+      color: var(--corp);
+      font-weight: 600;
+      margin: 1.5rem 0 0.8rem;
+      font-size: 1.1rem;
+    }
+    .card {
+      border: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0,91,171,0.15);
+      transform: translateY(-2px);
+    }
+    .card-header {
+      background: var(--corp);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px 8px 0 0 !important;
+    }
+    table.spec-table {
+      font-size: 0.88rem;
+    }
+    table.spec-table th {
+      background: var(--corp);
+      color: #fff;
+      font-weight: 600;
+      white-space: nowrap;
+      padding: 12px;
+    }
+    table.spec-table td {
+      vertical-align: top;
+      padding: 10px 12px;
+    }
+    table.spec-table tbody tr:hover {
+      background: rgba(0,91,171,0.03);
+    }
+    code {
+      background: #EEF2F7;
+      color: var(--corp-dark);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.85em;
+    }
+    pre.code-block {
+      background: #1a1a2e;
+      color: #e0e0e0;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+    pre.code-block .keyword {
+      color: #5BA4D9;
+    }
+    pre.code-block .string {
+      color: #98C379;
+    }
+    pre.code-block .comment {
+      color: #6c757d;
+    }
+    .param-card {
+      border-left: 4px solid var(--corp-light);
+      background: #fff;
+      padding: 16px;
+      margin-bottom: 12px;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+    .param-card:hover {
+      box-shadow: 0 3px 8px rgba(0,91,171,0.12);
+      transform: translateX(3px);
+    }
+    .param-card h5 {
+      color: var(--corp-dark);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .param-card .param-range {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .pricing-highlight {
+      background: linear-gradient(135deg, rgba(0,91,171,0.05), rgba(240,150,28,0.05));
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .flow-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 1.5rem 0;
+    }
+    .flow-step {
+      background: var(--corp);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+      flex: 1;
+      min-width: 140px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .flow-arrow {
+      color: var(--accent);
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .glossary-item {
+      background: #fff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      border-left: 3px solid var(--corp-light);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+    .glossary-item:hover {
+      box-shadow: 0 3px 8px rgba(0,91,171,0.12);
+      transform: translateX(3px);
+    }
+    .glossary-item strong {
+      color: var(--corp-dark);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .glossary-item span {
+      color: #555;
+      font-size: 0.9rem;
+    }
+    .group-title {
+      color: var(--corp);
+      font-weight: 600;
+      margin: 1.5rem 0 0.8rem;
+      font-size: 1.05rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="doc-header">
+    <div class="container">
+      <h1>生成AI基礎ガイド <span class="badge-ver">2026年2月版</span></h1>
+      <p class="subtitle mb-0">AI News Daily Deck - リファレンスドキュメント</p>
+    </div>
+  </header>
+
+  <div class="container my-4">
+
+    <ul class="nav nav-pills nav-fill mb-4" id="aiBasicsTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="basics-tab" data-bs-toggle="pill" data-bs-target="#basics" type="button" role="tab">基礎用語</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="params-tab" data-bs-toggle="pill" data-bs-target="#params" type="button" role="tab">パラメータ</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="api-tab" data-bs-toggle="pill" data-bs-target="#api" type="button" role="tab">API利用</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pricing-tab" data-bs-toggle="pill" data-bs-target="#pricing" type="button" role="tab">料金比較</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="rag-tab" data-bs-toggle="pill" data-bs-target="#rag" type="button" role="tab">RAG・Fine-tuning</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="glossary-tab" data-bs-toggle="pill" data-bs-target="#glossary" type="button" role="tab">用語集</button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="aiBasicsTabsContent">
+
+      <!-- Tab 1: 基礎用語 -->
+      <div class="tab-pane fade show active" id="basics" role="tabpanel">
+        <h2 class="section-title">基礎用語</h2>
+
+        <div class="card">
+          <div class="card-header">トークン (Token)</div>
+          <div class="card-body">
+            <p><strong>テキストを処理するための最小単位</strong></p>
+            <h6 class="subsection-title">BPE (Byte-Pair Encoding)</h6>
+            <p>OpenAIがGPTモデルで採用したトークン化アルゴリズム:</p>
+            <ol>
+              <li>全文字を抽出してベース語彙を構築</li>
+              <li>最も頻繁に出現する連続トークンペアを検索</li>
+              <li>そのペアを1つの新しいトークンにマージ</li>
+              <li>目標語彙サイズに達するまで繰り返す</li>
+            </ol>
+            <h6 class="subsection-title">トークン消費の特性</h6>
+            <ul>
+              <li>日本語は英語より多くのトークンを消費する傾向（約1.5-2倍）</li>
+              <li><strong>目安:</strong> 英語1単語 ≒ 1-2トークン、日本語1文字 ≒ 1-3トークン</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">コンテキストウィンドウ (Context Window)</div>
+          <div class="card-body">
+            <p><strong>LLMが一度に処理できる入力と出力の合計トークン数の上限</strong></p>
+            <h6 class="subsection-title">2026年主要モデル比較</h6>
+            <table class="table table-bordered spec-table">
+              <thead>
+                <tr>
+                  <th>モデル</th>
+                  <th>コンテキストウィンドウ</th>
+                  <th>備考</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Google Gemini 3 Pro</td>
+                  <td>10,000,000トークン</td>
+                  <td>現在利用可能な最大</td>
+                </tr>
+                <tr>
+                  <td>Meta Llama 4 Scout</td>
+                  <td>10,000,000トークン</td>
+                  <td>-</td>
+                </tr>
+                <tr>
+                  <td>Claude Opus 4.6</td>
+                  <td>200,000トークン</td>
+                  <td>Tier 4+は1Mベータ</td>
+                </tr>
+                <tr>
+                  <td>GPT-5</td>
+                  <td>200,000トークン</td>
+                  <td>-</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="alert alert-warning mb-0">
+              <strong>注意:</strong> 広告値と実効値には差がある。実効容量は広告最大値の60-70%程度
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">プロンプト (Prompt)</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <h6 class="subsection-title">システムプロンプト</h6>
+                <p>LLMの動作方法や役割を定義。会話全体に適用される</p>
+              </div>
+              <div class="col-md-4">
+                <h6 class="subsection-title">ユーザープロンプト</h6>
+                <p>個別リクエストごとの具体的な指示や質問</p>
+              </div>
+              <div class="col-md-4">
+                <h6 class="subsection-title">アシスタントメッセージ</h6>
+                <p>LLMからの応答</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">入力トークン / 出力トークン</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="subsection-title">入力トークン</h6>
+                <p>ユーザーが送信するプロンプトや文脈のトークン数</p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="subsection-title">出力トークン</h6>
+                <p>LLMが生成して返すレスポンスのトークン数</p>
+              </div>
+            </div>
+            <div class="alert alert-info mb-0">
+              <strong>重要:</strong> 出力トークンは入力トークンより高価（通常2-5倍）
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">ハルシネーション (Hallucination)</div>
+          <div class="card-body">
+            <p><strong>事実の根拠から逸脱した不正確な出力を生成する現象</strong></p>
+            <p>LLMは知識の限界に達しても推測で回答を続ける傾向があります。</p>
+            <h6 class="subsection-title">緩和策</h6>
+            <ul>
+              <li>RAG（Retrieval-Augmented Generation）の導入</li>
+              <li>ファクトチェックプロセスの実装</li>
+              <li>ソース引用の明示的な要求</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tab 2: パラメータ -->
+      <div class="tab-pane fade" id="params" role="tabpanel">
+        <h2 class="section-title">パラメータ</h2>
+
+        <div class="param-card">
+          <h5>Temperature (温度)</h5>
+          <p class="param-range">範囲: 0.0 - 2.0（一般的にはデフォルト1.0）</p>
+          <ul>
+            <li><strong>低温度（&lt;1）:</strong> 保守的で予測可能な出力。高確率トークンがさらに選ばれやすい</li>
+            <li><strong>高温度（&gt;1）:</strong> クリエイティブでランダムな出力。確率分布が平坦化</li>
+          </ul>
+          <h6 class="subsection-title">推奨値</h6>
+          <div class="row">
+            <div class="col-md-3">
+              <div class="text-center p-2 bg-light rounded">
+                <div class="fw-bold">コード生成</div>
+                <div class="text-primary">0.0-0.3</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="text-center p-2 bg-light rounded">
+                <div class="fw-bold">一般会話</div>
+                <div class="text-primary">0.7</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="text-center p-2 bg-light rounded">
+                <div class="fw-bold">創作</div>
+                <div class="text-primary">1.0-1.5</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="text-center p-2 bg-light rounded">
+                <div class="fw-bold">データ抽出</div>
+                <div class="text-primary">0.0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="param-card">
+          <h5>Top-K サンプリング</h5>
+          <p class="param-range">範囲: 1 - 語彙サイズ全体</p>
+          <p>各ステップで最も確率の高いK個のトークンに出力を制限</p>
+          <ul>
+            <li><strong>K=1:</strong> 最も確率の高いトークンのみ（greedy decoding）</li>
+            <li><strong>K=50:</strong> 上位50個のトークンから選択</li>
+          </ul>
+          <div class="alert alert-warning mb-0">
+            固定数のため、状況に応じた柔軟性は低い
+          </div>
+        </div>
+
+        <div class="param-card">
+          <h5>Top-P サンプリング（Nucleus Sampling）</h5>
+          <p class="param-range">範囲: 0.0 - 1.0</p>
+          <p>累積確率に基づいてトークンを動的に選択</p>
+          <ul>
+            <li><strong>P=0.9:</strong> 上位90%の確率を占めるトークンから選択</li>
+            <li>Top-Kと異なり、候補トークン数が状況に応じて変動</li>
+            <li><strong>推奨開始値:</strong> 0.95</li>
+          </ul>
+        </div>
+
+        <div class="param-card">
+          <h5>Max Tokens (最大出力トークン数)</h5>
+          <p>生成される出力の上限を設定</p>
+          <p>コストと応答長のトレードオフを考慮して設定</p>
+        </div>
+
+        <h3 class="subsection-title mt-4">推奨パラメータ設定早見表</h3>
+        <table class="table table-bordered spec-table">
+          <thead>
+            <tr>
+              <th>ユースケース</th>
+              <th>Temperature</th>
+              <th>Top-P</th>
+              <th>Top-K</th>
+              <th>Max Tokens</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>コード生成</td>
+              <td>0.0-0.3</td>
+              <td>0.9</td>
+              <td>40</td>
+              <td>タスクに応じて</td>
+            </tr>
+            <tr>
+              <td>文書要約</td>
+              <td>0.3-0.5</td>
+              <td>0.9</td>
+              <td>40</td>
+              <td>入力の1/3程度</td>
+            </tr>
+            <tr>
+              <td>一般会話</td>
+              <td>0.7</td>
+              <td>0.95</td>
+              <td>50</td>
+              <td>2000-4000</td>
+            </tr>
+            <tr>
+              <td>創作・ブレスト</td>
+              <td>1.0-1.5</td>
+              <td>0.95-1.0</td>
+              <td>100</td>
+              <td>制限なし</td>
+            </tr>
+            <tr>
+              <td>データ抽出</td>
+              <td>0.0</td>
+              <td>0.9</td>
+              <td>10</td>
+              <td>構造に応じて</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <!-- Tab 3: API利用 -->
+      <div class="tab-pane fade" id="api" role="tabpanel">
+        <h2 class="section-title">API利用</h2>
+
+        <h3 class="subsection-title">API呼び出しの基本フロー</h3>
+        <div class="flow-container">
+          <div class="flow-step">1. リクエスト準備<br><small>プロンプト作成、パラメータ設定</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">2. API呼び出し<br><small>HTTPリクエスト送信、認証情報付与</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">3. LLM処理<br><small>トークン化、モデル推論、次トークン予測</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">4. レスポンス生成<br><small>ストリーミングor一括送信</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">5. レスポンス受信<br><small>テキスト、使用トークン数、メタデータ</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">6. 後処理<br><small>デコード、Function Calling結果処理</small></div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-header">ストリーミング (Streaming)</div>
+          <div class="card-body">
+            <p><strong>LLMが応答全体を完了する前にトークンを逐次送信する技術</strong></p>
+            <ul>
+              <li>Server-Sent Events (SSE) を使用</li>
+              <li><code>content-type: text/event-stream</code> ヘッダー</li>
+            </ul>
+            <h6 class="subsection-title">利点</h6>
+            <ul>
+              <li>待ち時間の体感短縮</li>
+              <li>UX向上（リアルタイムフィードバック）</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Function Calling / Tool Use</div>
+          <div class="card-body">
+            <p><strong>LLMを外部ツール、API、関数と接続する機能</strong></p>
+            <h6 class="subsection-title">実行フロー</h6>
+            <ol>
+              <li>ユーザークエリ送信</li>
+              <li>LLMが適切な関数を特定、JSON形式でパラメータ出力</li>
+              <li>アプリケーション側で関数実行</li>
+              <li>結果をLLMに返して最終応答生成</li>
+            </ol>
+            <div class="alert alert-info mb-0">
+              <strong>注:</strong> LLM自身は関数を実行しません。関数の特定とパラメータ生成のみを行います。
+            </div>
+          </div>
+        </div>
+
+        <h3 class="subsection-title mt-4">エラーハンドリング</h3>
+        <table class="table table-bordered spec-table">
+          <thead>
+            <tr>
+              <th>エラー</th>
+              <th>コード</th>
+              <th>原因</th>
+              <th>対処</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>認証エラー</td>
+              <td>401</td>
+              <td>無効なAPIキー</td>
+              <td>キーの確認・更新</td>
+            </tr>
+            <tr>
+              <td>レート制限</td>
+              <td>429</td>
+              <td>リクエスト頻度超過</td>
+              <td>エクスポネンシャルバックオフ</td>
+            </tr>
+            <tr>
+              <td>トークン超過</td>
+              <td>400</td>
+              <td>コンテキスト超過</td>
+              <td>プロンプト短縮</td>
+            </tr>
+            <tr>
+              <td>タイムアウト</td>
+              <td>504</td>
+              <td>処理時間超過</td>
+              <td>リトライ/ストリーミング</td>
+            </tr>
+            <tr>
+              <td>サービス停止</td>
+              <td>503</td>
+              <td>サーバー側問題</td>
+              <td>待機後リトライ</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <!-- Tab 4: 料金比較 -->
+      <div class="tab-pane fade" id="pricing" role="tabpanel">
+        <h2 class="section-title">料金比較</h2>
+
+        <div class="pricing-highlight">
+          <p class="mb-0"><strong>注意:</strong> 以下の料金は2026年2月時点のものです。最新の料金は各プロバイダーの公式サイトをご確認ください。</p>
+        </div>
+
+        <h3 class="subsection-title">OpenAI</h3>
+        <table class="table table-bordered spec-table mb-4">
+          <thead>
+            <tr>
+              <th>モデル</th>
+              <th>入力 ($/1Mトークン)</th>
+              <th>出力 ($/1Mトークン)</th>
+              <th>コンテキスト</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GPT-4o</td>
+              <td>$2.50</td>
+              <td>$10.00</td>
+              <td>128K</td>
+            </tr>
+            <tr>
+              <td>GPT-5</td>
+              <td>$1.25</td>
+              <td>$10.00</td>
+              <td>200K</td>
+            </tr>
+            <tr>
+              <td>o1</td>
+              <td>$5.00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>o3</td>
+              <td>$10.00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="subsection-title">Anthropic Claude</h3>
+        <table class="table table-bordered spec-table mb-4">
+          <thead>
+            <tr>
+              <th>モデル</th>
+              <th>入力 ($/1Mトークン)</th>
+              <th>出力 ($/1Mトークン)</th>
+              <th>コンテキスト</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Claude Haiku 4.5</td>
+              <td>$1.00</td>
+              <td>$5.00</td>
+              <td>200K</td>
+            </tr>
+            <tr>
+              <td>Claude Sonnet 4.5</td>
+              <td>$3.00</td>
+              <td>$15.00</td>
+              <td>200K</td>
+            </tr>
+            <tr>
+              <td>Claude Sonnet 4.5 (長文脈)</td>
+              <td>$6.00</td>
+              <td>$22.50</td>
+              <td>1M</td>
+            </tr>
+            <tr>
+              <td>Claude Opus 4.6</td>
+              <td>$5.00</td>
+              <td>$25.00</td>
+              <td>200K</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="subsection-title">Google Gemini</h3>
+        <table class="table table-bordered spec-table mb-4">
+          <thead>
+            <tr>
+              <th>モデル</th>
+              <th>入力 ($/1Mトークン)</th>
+              <th>出力 ($/1Mトークン)</th>
+              <th>コンテキスト</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gemini 2.0 Flash</td>
+              <td>$0.10</td>
+              <td>$0.40</td>
+              <td>1M</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="subsection-title">Mistral AI</h3>
+        <table class="table table-bordered spec-table mb-4">
+          <thead>
+            <tr>
+              <th>モデル</th>
+              <th>入力 ($/1Mトークン)</th>
+              <th>出力 ($/1Mトークン)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mistral Nemo</td>
+              <td>$0.02</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Mistral Medium 3</td>
+              <td>$0.40</td>
+              <td>$2.00</td>
+            </tr>
+            <tr>
+              <td>Mistral Large 2411</td>
+              <td>$2.00</td>
+              <td>$6.00</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="subsection-title">Meta Llama (DeepInfra)</h3>
+        <table class="table table-bordered spec-table mb-4">
+          <thead>
+            <tr>
+              <th>モデル</th>
+              <th>入力 ($/1Mトークン)</th>
+              <th>出力 ($/1Mトークン)</th>
+              <th>コンテキスト</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Llama 4 Scout</td>
+              <td>$0.10</td>
+              <td>$0.30</td>
+              <td>130K</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="card">
+          <div class="card-header">コスト最適化テクニック</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <h6 class="subsection-title">プロンプトキャッシング</h6>
+                <p>繰り返しプロンプトで最大75%削減</p>
+                <p class="small text-muted">システムプロンプトなどの固定部分をキャッシュして再利用</p>
+              </div>
+              <div class="col-md-4">
+                <h6 class="subsection-title">バッチ処理</h6>
+                <p>対話型より50%割引（SLAなし）</p>
+                <p class="small text-muted">リアルタイム性が不要な大量処理に最適</p>
+              </div>
+              <div class="col-md-4">
+                <h6 class="subsection-title">適切なモデル選択</h6>
+                <p>タスクの複雑さに応じて使い分け</p>
+                <p class="small text-muted">簡単なタスクに高価なモデルを使わない</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tab 5: RAG・Fine-tuning -->
+      <div class="tab-pane fade" id="rag" role="tabpanel">
+        <h2 class="section-title">RAG・Fine-tuning</h2>
+
+        <div class="card">
+          <div class="card-header">RAG (Retrieval-Augmented Generation)</div>
+          <div class="card-body">
+            <p><strong>LLMに企業独自の信頼できるデータを注入し、より正確な応答を生成するフレームワーク</strong></p>
+
+            <h6 class="subsection-title">仕組みフロー</h6>
+            <div class="flow-container">
+              <div class="flow-step">1. ユーザーが質問</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">2. クエリに関連する情報を内部ソースから取得</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">3. 拡張プロンプトを作成</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">4. LLMに供給して回答を生成</div>
+            </div>
+
+            <h6 class="subsection-title mt-4">利点</h6>
+            <ul>
+              <li>再トレーニング不要</li>
+              <li>リアルタイムデータ更新可能</li>
+              <li>実装コストが比較的低い</li>
+            </ul>
+
+            <h6 class="subsection-title">制限</h6>
+            <div class="alert alert-warning mb-0">
+              ハルシネーションは完全には排除できない。検索品質に依存する。
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Fine-tuning</div>
+          <div class="card-body">
+            <p><strong>事前トレーニングされたLLMを特定タスク/ドメインに適応させる追加トレーニング</strong></p>
+
+            <h6 class="subsection-title">特徴</h6>
+            <ul>
+              <li>静的な知識に依存</li>
+              <li>新情報には再トレーニング必要</li>
+              <li>モデルの振る舞いを根本から変更可能</li>
+            </ul>
+
+            <h6 class="subsection-title">ユースケース</h6>
+            <ul>
+              <li>特定ドメインの専門用語の理解</li>
+              <li>一貫したスタイル/トーンの維持</li>
+              <li>特定フォーマットでの出力</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="subsection-title mt-4">RAG vs Fine-tuning 比較表</h3>
+        <table class="table table-bordered spec-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>RAG</th>
+              <th>Fine-tuning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>データ更新</td>
+              <td>リアルタイム可能</td>
+              <td>再トレーニング必要</td>
+            </tr>
+            <tr>
+              <td>コスト</td>
+              <td>検索インフラ必要</td>
+              <td>トレーニング費用</td>
+            </tr>
+            <tr>
+              <td>精度</td>
+              <td>検索品質に依存</td>
+              <td>ドメイン特化で高精度</td>
+            </tr>
+            <tr>
+              <td>導入難易度</td>
+              <td>中程度</td>
+              <td>高い</td>
+            </tr>
+            <tr>
+              <td>推奨用途</td>
+              <td>最新情報が必要な場合</td>
+              <td>スタイル/ドメイン特化</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <!-- Tab 6: 用語集 -->
+      <div class="tab-pane fade" id="glossary" role="tabpanel">
+        <h2 class="section-title">用語集</h2>
+
+        <h3 class="group-title">基本概念</h3>
+        <div class="glossary-grid">
+          <div class="glossary-item">
+            <strong>BPE (Byte-Pair Encoding)</strong>
+            <span>トークン化アルゴリズム。頻出する文字列を統合してトークンを生成。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Context Window</strong>
+            <span>LLMが処理可能な最大トークン数。入力と出力の合計値。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Fine-tuning</strong>
+            <span>特定タスクへのモデル適応。追加トレーニングにより振る舞いを変更。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Hallucination</strong>
+            <span>事実に基づかない出力の生成。LLMの知識限界を超えた場合に発生。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>LLM (Large Language Model)</strong>
+            <span>大規模言語モデル。膨大なテキストデータで訓練されたAIモデル。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Prompt</strong>
+            <span>LLMへの指示・入力テキスト。システム、ユーザー、アシスタントの種類がある。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>RAG (Retrieval-Augmented Generation)</strong>
+            <span>検索拡張生成。外部データを取得してLLMに供給する手法。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Token</strong>
+            <span>テキスト処理の最小単位。単語の一部、単語全体、記号などを表す。</span>
+          </div>
+        </div>
+
+        <h3 class="group-title">パラメータ</h3>
+        <div class="glossary-grid">
+          <div class="glossary-item">
+            <strong>Max Tokens</strong>
+            <span>最大出力トークン数。生成される応答の長さの上限。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Temperature</strong>
+            <span>出力のランダム性制御パラメータ。低い値で保守的、高い値で創造的。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Top-K</strong>
+            <span>上位K個のトークンに制限するサンプリング手法。固定数の候補から選択。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Top-P (Nucleus Sampling)</strong>
+            <span>累積確率に基づくサンプリング。動的に候補トークン数を調整。</span>
+          </div>
+        </div>
+
+        <h3 class="group-title">API・技術</h3>
+        <div class="glossary-grid">
+          <div class="glossary-item">
+            <strong>API Key</strong>
+            <span>APIアクセス用の認証キー。リクエストの識別と課金に使用。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Batch Processing</strong>
+            <span>非同期一括処理。リアルタイム性不要な大量リクエストに適用。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Embedding</strong>
+            <span>テキストのベクトル表現。意味的な類似性の計算に使用。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Function Calling</strong>
+            <span>LLMから外部関数を呼び出す仕組み。ツールやAPIとの統合に使用。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>JSON-RPC</strong>
+            <span>JSONベースの遠隔手続き呼び出しプロトコル。軽量なAPI通信に使用。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Rate Limit</strong>
+            <span>APIリクエスト頻度の上限。1分あたり、1日あたりなどで設定。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>SSE (Server-Sent Events)</strong>
+            <span>サーバーからクライアントへの単方向イベントストリーム技術。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Streaming</strong>
+            <span>トークンの逐次送信技術。応答完了前に部分的な結果を表示。</span>
+          </div>
+        </div>
+
+        <h3 class="group-title">モデル・プロバイダー</h3>
+        <div class="glossary-grid">
+          <div class="glossary-item">
+            <strong>Anthropic</strong>
+            <span>Claude シリーズの開発元。安全性とアライメントに注力。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Google DeepMind</strong>
+            <span>Gemini シリーズの開発元。長文脈処理に強み。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Meta</strong>
+            <span>Llama シリーズの開発元。オープンソースモデルを提供。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>Mistral AI</strong>
+            <span>Mistral シリーズの開発元。フランス拠点、欧州での強み。</span>
+          </div>
+          <div class="glossary-item">
+            <strong>OpenAI</strong>
+            <span>GPT/o シリーズの開発元。商用LLMの先駆者。</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="container mt-4 mb-3">
+    <div class="text-center small text-muted py-3">
+      <p class="mb-1">AI News Daily Deck - リファレンスドキュメント | 最終更新: 2026-02-12</p>
+      <p class="mb-0">料金情報は2026年2月時点のものです。最新の料金は各プロバイダーの公式サイトをご確認ください。</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

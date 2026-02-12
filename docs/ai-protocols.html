@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIエージェントプロトコル解説ガイド | AI News Daily Deck</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --corp: #005BAB;
+      --corp-light: #5BA4D9;
+      --corp-dark: #003D73;
+      --accent: #F0961C;
+      --text-dark: #231815;
+      --bg-light: #F8FAFB;
+    }
+
+    body {
+      font-family: 'Meiryo', 'Hiragino Sans', sans-serif;
+      color: var(--text-dark);
+      background: var(--bg-light);
+      line-height: 1.7;
+    }
+
+    .doc-header {
+      background: linear-gradient(135deg, var(--corp-dark), var(--corp));
+      color: #fff;
+      padding: 3rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .doc-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .doc-header .subtitle {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    .badge-ver {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-left: 12px;
+    }
+
+    .nav-pills {
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-pills .nav-link {
+      color: var(--corp);
+      border-radius: 0;
+      border-bottom: 3px solid transparent;
+      background: none;
+      font-weight: 600;
+      padding: 0.75rem 1.25rem;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .nav-pills .nav-link:hover {
+      background: rgba(0, 91, 171, 0.04);
+      color: var(--corp-dark);
+    }
+
+    .nav-pills .nav-link.active {
+      color: var(--corp-dark);
+      border-bottom-color: var(--accent);
+      background: rgba(0, 91, 171, 0.06);
+    }
+
+    .section-title {
+      color: var(--corp-dark);
+      font-weight: 700;
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+      margin: 2rem 0 1rem;
+      font-size: 1.4rem;
+    }
+
+    .section-subtitle {
+      color: var(--corp);
+      font-weight: 600;
+      margin: 1.5rem 0 0.75rem;
+      font-size: 1.1rem;
+    }
+
+    .card {
+      border: none;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0, 91, 171, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      background: var(--corp);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px 8px 0 0 !important;
+      padding: 0.75rem 1.25rem;
+    }
+
+    .card-body {
+      padding: 1.25rem;
+    }
+
+    table.spec-table {
+      font-size: 0.88rem;
+      margin: 1rem 0;
+    }
+
+    table.spec-table th {
+      background: var(--corp);
+      color: #fff;
+      font-weight: 600;
+      white-space: nowrap;
+      padding: 0.75rem 0.5rem;
+      border: 1px solid var(--corp-dark);
+    }
+
+    table.spec-table td {
+      vertical-align: top;
+      padding: 0.75rem 0.5rem;
+      border: 1px solid #ddd;
+    }
+
+    table.spec-table tr:nth-child(even) {
+      background: rgba(0, 91, 171, 0.02);
+    }
+
+    table.spec-table tr:hover {
+      background: rgba(0, 91, 171, 0.05);
+    }
+
+    code {
+      background: #EEF2F7;
+      color: var(--corp-dark);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.85em;
+      font-family: 'Courier New', monospace;
+    }
+
+    pre {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    pre code {
+      background: transparent;
+      color: #e2e8f0;
+      padding: 0;
+      font-size: 0.9em;
+      line-height: 1.5;
+    }
+
+    .protocol-diagram {
+      background: white;
+      border: 2px solid var(--corp-light);
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .protocol-box {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--corp-light), var(--corp));
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      margin: 0.5rem;
+      font-weight: 600;
+      min-width: 150px;
+      box-shadow: 0 2px 8px rgba(0, 91, 171, 0.3);
+    }
+
+    .protocol-box.skills {
+      background: linear-gradient(135deg, #48bb78, #38a169);
+    }
+
+    .protocol-box.agents-md {
+      background: linear-gradient(135deg, #ed8936, #dd6b20);
+    }
+
+    .protocol-box.ucp {
+      background: linear-gradient(135deg, #9f7aea, #805ad5);
+    }
+
+    .connection-line {
+      color: var(--corp-light);
+      font-size: 1.5rem;
+      margin: 0 0.5rem;
+    }
+
+    .info-box {
+      background: #f0f9ff;
+      border-left: 4px solid var(--corp);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .info-box strong {
+      color: var(--corp-dark);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .stat-card {
+      background: white;
+      border: 2px solid var(--corp-light);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--corp);
+      box-shadow: 0 4px 12px rgba(0, 91, 171, 0.15);
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--corp);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+
+    .link-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .link-list li {
+      margin: 0.5rem 0;
+    }
+
+    .link-list a {
+      color: var(--corp);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .link-list a:hover {
+      color: var(--corp-dark);
+      text-decoration: underline;
+    }
+
+    .footer-section {
+      background: white;
+      border-top: 3px solid var(--corp-light);
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .doc-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .nav-pills .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+      }
+
+      table.spec-table {
+        font-size: 0.75rem;
+      }
+
+      table.spec-table th,
+      table.spec-table td {
+        padding: 0.5rem 0.25rem;
+      }
+
+      .protocol-box {
+        display: block;
+        margin: 0.5rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="container">
+      <h1>
+        AIエージェントプロトコル解説ガイド
+        <span class="badge-ver">2026年2月版</span>
+      </h1>
+      <p class="subtitle">AI News Daily Deck - リファレンスドキュメント</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container my-4">
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-pills mb-3" id="protocol-tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="overview-tab" data-bs-toggle="pill" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">概要・比較</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="mcp-tab" data-bs-toggle="pill" data-bs-target="#mcp" type="button" role="tab" aria-controls="mcp" aria-selected="false">MCP</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="a2a-tab" data-bs-toggle="pill" data-bs-target="#a2a" type="button" role="tab" aria-controls="a2a" aria-selected="false">A2A</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="ucp-tab" data-bs-toggle="pill" data-bs-target="#ucp" type="button" role="tab" aria-controls="ucp" aria-selected="false">UCP</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="skills-tab" data-bs-toggle="pill" data-bs-target="#skills" type="button" role="tab" aria-controls="skills" aria-selected="false">Agent Skills & AGENTS.md</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="ecosystem-tab" data-bs-toggle="pill" data-bs-target="#ecosystem" type="button" role="tab" aria-controls="ecosystem" aria-selected="false">エコシステム</button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="protocol-tabContent">
+
+      <!-- Tab 1: Overview -->
+      <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+        <h2 class="section-title">AIエージェントプロトコルの時代</h2>
+        <p>2024年から2026年にかけて、AIエージェントの相互運用性を実現するための様々なオープンプロトコルが提唱されてきました。これらのプロトコルは、それぞれ異なる目的と設計思想を持ち、AIエージェント・エコシステムの発展に貢献しています。</p>
+        <p>本ガイドでは、主要な6つのプロトコル・標準規格（MCP、A2A、ACP、UCP、Agent Skills、AGENTS.md）について、その特徴、アーキテクチャ、採用状況、相互関係を詳しく解説します。</p>
+
+        <h3 class="section-subtitle">プロトコル比較表</h3>
+        <div class="table-responsive">
+          <table class="table spec-table table-bordered">
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>MCP</th>
+                <th>A2A</th>
+                <th>ACP</th>
+                <th>UCP</th>
+                <th>Agent Skills</th>
+                <th>AGENTS.md</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>主な目的</strong></td>
+                <td>エージェント⇔ツール統合</td>
+                <td>エージェント⇔エージェント連携</td>
+                <td>エージェント間通信</td>
+                <td>エージェント型EC</td>
+                <td>エージェント能力拡張</td>
+                <td>コーディング指示</td>
+              </tr>
+              <tr>
+                <td><strong>提唱元</strong></td>
+                <td>Anthropic</td>
+                <td>Google</td>
+                <td>IBM BeeAI</td>
+                <td>Google</td>
+                <td>Anthropic</td>
+                <td>OpenAI</td>
+              </tr>
+              <tr>
+                <td><strong>発表時期</strong></td>
+                <td>2024年11月</td>
+                <td>2025年4月</td>
+                <td>2025年</td>
+                <td>2026年1月</td>
+                <td>2025年10月</td>
+                <td>2025年8月</td>
+              </tr>
+              <tr>
+                <td><strong>アーキテクチャ</strong></td>
+                <td>クライアント・サーバー</td>
+                <td>ピアツーピア</td>
+                <td>REST/JSON-RPC</td>
+                <td>REST/API</td>
+                <td>フォルダベース</td>
+                <td>Markdownファイル</td>
+              </tr>
+              <tr>
+                <td><strong>プロトコル</strong></td>
+                <td>JSON-RPC 2.0</td>
+                <td>HTTP/SSE/JSON-RPC</td>
+                <td>HTTP/JSON-RPC 2.0</td>
+                <td>REST/MCP/A2A</td>
+                <td>YAML Frontmatter</td>
+                <td>Markdown</td>
+              </tr>
+              <tr>
+                <td><strong>設定ファイル</strong></td>
+                <td>mcp.json</td>
+                <td>a2a.json / Agent Card</td>
+                <td>acp.json</td>
+                <td>/.well-known/ucp</td>
+                <td>SKILL.md</td>
+                <td>AGENTS.md</td>
+              </tr>
+              <tr>
+                <td><strong>管理</strong></td>
+                <td>AAIF (Linux Foundation)</td>
+                <td>Linux Foundation</td>
+                <td>A2Aへ統合中</td>
+                <td>オープンソース</td>
+                <td>AAIF (Linux Foundation)</td>
+                <td>AAIF (Linux Foundation)</td>
+              </tr>
+              <tr>
+                <td><strong>ステータス</strong></td>
+                <td>安定版</td>
+                <td>v0.3</td>
+                <td>統合移行中</td>
+                <td>初期版</td>
+                <td>オープンスタンダード</td>
+                <td>安定版</td>
+              </tr>
+              <tr>
+                <td><strong>普及度</strong></td>
+                <td>極めて高い<br>(97M DL/月)</td>
+                <td>高い<br>(50+パートナー)</td>
+                <td>中程度</td>
+                <td>急速拡大中</td>
+                <td>拡大中</td>
+                <td>非常に高い<br>(60K+プロジェクト)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="section-subtitle">プロトコルの関係性と役割分担</h3>
+        <div class="protocol-diagram">
+          <div style="margin-bottom: 1.5rem;">
+            <div class="protocol-box">MCP</div>
+            <span class="connection-line">+</span>
+            <div class="protocol-box">A2A</div>
+            <span class="connection-line">=</span>
+            <div style="display: inline-block; color: var(--corp-dark); font-weight: 700; font-size: 1.1rem;">完全なエージェントシステム</div>
+          </div>
+          <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+            <p><strong>MCP</strong>はエージェントに「手」を提供（ツール統合）</p>
+            <p><strong>A2A</strong>はエージェントに「声」を提供（エージェント間通信）</p>
+          </div>
+          <div style="margin-top: 2rem;">
+            <div class="protocol-box skills">Agent Skills</div>
+            <div style="display: inline-block; margin: 1rem; color: #666;">エージェントに「知識」を提供</div>
+          </div>
+          <div style="margin-top: 1rem;">
+            <div class="protocol-box agents-md">AGENTS.md</div>
+            <div style="display: inline-block; margin: 1rem; color: #666;">エージェントに「指示」を提供</div>
+          </div>
+          <div style="margin-top: 1rem;">
+            <div class="protocol-box ucp">UCP</div>
+            <div style="display: inline-block; margin: 1rem; color: #666;">コマース領域特化（MCP/A2A統合）</div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>注目ポイント:</strong> ACPは2025年9月にA2Aチームと統合を開始し、現在はA2Aプロトコルに技術的貢献を統合する形で発展しています。独立したプロトコルとしての役割は終了し、A2Aへの移行が進んでいます。
+        </div>
+      </div>
+
+      <!-- Tab 2: MCP -->
+      <div class="tab-pane fade" id="mcp" role="tabpanel" aria-labelledby="mcp-tab">
+        <h2 class="section-title">MCP (Model Context Protocol)</h2>
+
+        <div class="card">
+          <div class="card-header">概要</div>
+          <div class="card-body">
+            <p><strong>Model Context Protocol (MCP)</strong>は、LLMアプリケーションと外部データソース・ツールをシームレスに統合するためのオープンプロトコルです。Anthropicが2024年11月に発表し、現在はAAIF（Agentic AI Foundation）の傘下で管理されています。</p>
+            <p>MCPは、AIエージェントに「手」を提供するプロトコルとして位置づけられており、エージェントが外部のツール、データベース、APIを標準化された方法で利用できるようにします。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">主な機能</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">Resources (リソース)</div>
+              <div class="card-body">
+                <p>ファイル、データベースレコード、APIレスポンスなど、エージェントが読み取り可能なデータソースを提供します。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">Prompts (プロンプト)</div>
+              <div class="card-body">
+                <p>再利用可能なプロンプトテンプレートを定義し、一貫性のあるユーザー体験を提供します。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">Tools (ツール)</div>
+              <div class="card-body">
+                <p>エージェントが実行できる関数やAPIを公開し、外部システムとのインタラクションを可能にします。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">Sampling (サンプリング)</div>
+              <div class="card-body">
+                <p>サーバー側でLLMを呼び出し、エージェントフローやチェーン処理を実装します。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">アーキテクチャ</h3>
+        <div class="info-box">
+          <p><strong>設計思想:</strong> クライアント・サーバー型アーキテクチャ</p>
+          <p><strong>通信プロトコル:</strong> JSON-RPC 2.0</p>
+          <p><strong>トランスポート:</strong> stdio（標準入出力）、SSE（Server-Sent Events）、HTTP</p>
+        </div>
+
+        <h3 class="section-subtitle">設定例 (mcp.json)</h3>
+        <pre><code>{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/yourname/Documents"
+      ],
+      "env": {
+        "API_KEY": "${YOUR_API_KEY}"
+      },
+      "disabled": false,
+      "autoApprove": ["read"]
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://localhost/mydb"
+      ]
+    }
+  }
+}</code></pre>
+
+        <h3 class="section-subtitle">導入統計</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">97M</div>
+            <div class="stat-label">月間SDKダウンロード数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">10,000+</div>
+            <div class="stat-label">アクティブサーバー数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">極めて高い</div>
+            <div class="stat-label">普及度</div>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">主要採用企業・プロジェクト</h3>
+        <div class="card">
+          <div class="card-body">
+            <p><strong>大手テック企業:</strong> OpenAI、Google、Microsoft、AWS</p>
+            <p><strong>AI製品:</strong> ChatGPT、Claude、Gemini、Cursor、Windsurf、VS Code</p>
+            <p><strong>備考:</strong> 2024年11月の発表以降、急速に業界標準としての地位を確立しています。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">公式リンク</h3>
+        <ul class="link-list">
+          <li><a href="https://modelcontextprotocol.io" target="_blank">公式サイト: https://modelcontextprotocol.io</a></li>
+          <li><a href="https://github.com/modelcontextprotocol" target="_blank">GitHub: https://github.com/modelcontextprotocol</a></li>
+          <li><a href="https://spec.modelcontextprotocol.io" target="_blank">仕様書: https://spec.modelcontextprotocol.io</a></li>
+        </ul>
+      </div>
+
+      <!-- Tab 3: A2A -->
+      <div class="tab-pane fade" id="a2a" role="tabpanel" aria-labelledby="a2a-tab">
+        <h2 class="section-title">A2A (Agent-to-Agent Protocol)</h2>
+
+        <div class="card">
+          <div class="card-header">概要</div>
+          <div class="card-body">
+            <p><strong>Agent-to-Agent Protocol (A2A)</strong>は、AIエージェント間のコミュニケーションと相互運用性を実現するオープンプロトコルです。Googleが2025年4月に発表し、Linux Foundation傘下で管理されています。</p>
+            <p>A2Aは、AIエージェントに「声」を提供するプロトコルとして位置づけられており、異なるベンダーや組織が開発したエージェント同士が標準化された方法で対話・協働できるようにします。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">主な特徴</h3>
+        <div class="card">
+          <div class="card-body">
+            <ul>
+              <li><strong>ピアツーピアアーキテクチャ:</strong> エージェント同士が対等な立場で直接通信</li>
+              <li><strong>マルチプロトコル対応:</strong> HTTP、SSE（Server-Sent Events）、JSON-RPCをサポート</li>
+              <li><strong>Agent Card:</strong> エージェントの能力・仕様を記述した標準化された自己紹介カード</li>
+              <li><strong>柔軟な通信:</strong> 同期・非同期、リクエスト・レスポンス、ストリーミングに対応</li>
+              <li><strong>セキュリティ:</strong> 認証・認可メカニズムを標準実装</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">Agent Card例</h3>
+        <pre><code>{
+  "name": "seller-agent",
+  "description": "遠隔販売エージェント",
+  "version": "0.3",
+  "service_endpoint": "https://example.com/agent",
+  "supported_modalities": ["text", "json"],
+  "capabilities": [
+    {
+      "name": "product_search",
+      "description": "商品検索機能",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string" },
+          "category": { "type": "string" }
+        }
+      }
+    }
+  ],
+  "authentication": {
+    "type": "bearer_token",
+    "token_endpoint": "https://example.com/oauth/token"
+  },
+  "rate_limits": {
+    "requests_per_minute": 60
+  }
+}</code></pre>
+
+        <h3 class="section-subtitle">ACPとの統合</h3>
+        <div class="info-box">
+          <p><strong>統合時期:</strong> 2025年9月より統合開始</p>
+          <p><strong>背景:</strong> IBM BeeAIが開発したAgent Communication Protocol (ACP)は、類似の目的を持つプロトコルでした。両チームは協議の結果、エージェント通信プロトコルの分断を避けるため、ACPの技術的貢献をA2Aに統合する方針を決定しました。</p>
+          <p><strong>現状:</strong> ACPは独立したプロトコルとしての開発を終了し、A2Aへの移行が進められています。ACPの優れた設計要素はA2A v0.3以降に取り込まれています。</p>
+        </div>
+
+        <h3 class="section-subtitle">導入統計</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">パートナー企業数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">v0.3</div>
+            <div class="stat-label">現在のバージョン</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">高い</div>
+            <div class="stat-label">普及度</div>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">主要パートナー企業</h3>
+        <div class="card">
+          <div class="card-body">
+            <p><strong>テクノロジー企業:</strong> Atlassian、Box、Cohere、MongoDB、PayPal、Salesforce、SAP、ServiceNow</p>
+            <p><strong>コンサルティング企業:</strong> Accenture、Boston Consulting Group、Deloitte、McKinsey & Company、PwC</p>
+            <p><strong>その他:</strong> 50以上の企業・組織が参画し、業界横断的なエコシステムを形成しています。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">公式リンク</h3>
+        <ul class="link-list">
+          <li><a href="https://a2a-protocol.org" target="_blank">公式サイト: https://a2a-protocol.org</a></li>
+          <li><a href="https://github.com/a2aproject/A2A" target="_blank">GitHub: https://github.com/a2aproject/A2A</a></li>
+          <li><a href="https://spec.a2a-protocol.org" target="_blank">仕様書: https://spec.a2a-protocol.org</a></li>
+        </ul>
+      </div>
+
+      <!-- Tab 4: UCP -->
+      <div class="tab-pane fade" id="ucp" role="tabpanel" aria-labelledby="ucp-tab">
+        <h2 class="section-title">UCP (Universal Commerce Protocol)</h2>
+
+        <div class="card">
+          <div class="card-header">概要</div>
+          <div class="card-body">
+            <p><strong>Universal Commerce Protocol (UCP)</strong>は、エージェント型コマースのための次世代オープンソース標準です。Googleが2026年1月11日にNRF Retail's Big Showで発表しました。</p>
+            <p>UCPは、小売・EC事業者が既存のインフラを活用しながらAIエージェントに対応できるよう設計されており、REST API、MCP、A2Aの3つのプロトコルを柔軟に統合できる点が特徴です。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">主な特徴</h3>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">統一言語</div>
+              <div class="card-body">
+                <p>商品検索、カート操作、決済、配送など、EC機能を標準化されたボキャブラリーで定義します。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">柔軟な統合</div>
+              <div class="card-body">
+                <p>REST API、MCP、A2Aのいずれかまたは複数を選択して実装できます。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">既存インフラ互換</div>
+              <div class="card-body">
+                <p>既存のECプラットフォームやシステムをそのまま活用できる設計です。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">設定例 (/.well-known/ucp)</h3>
+        <pre><code>{
+  "version": "2026-01-23",
+  "merchant": {
+    "name": "Example Store",
+    "domain": "example.com",
+    "description": "家電・ガジェット専門店"
+  },
+  "services": {
+    "rest": {
+      "endpoint": "https://example.com/api/ucp",
+      "api_version": "1.0"
+    },
+    "mcp": {
+      "endpoint": "mcp://example.com/ucp",
+      "server_info": {
+        "name": "example-ucp-server",
+        "version": "1.0.0"
+      }
+    },
+    "a2a": {
+      "agent_card": "https://example.com/.well-known/a2a"
+    }
+  },
+  "capabilities": [
+    {
+      "name": "product_search",
+      "version": "1.0",
+      "description": "商品検索機能"
+    },
+    {
+      "name": "cart_management",
+      "version": "1.0",
+      "description": "カート管理機能"
+    },
+    {
+      "name": "checkout",
+      "version": "1.0",
+      "description": "決済機能"
+    },
+    {
+      "name": "fulfillment",
+      "version": "1.0",
+      "description": "配送管理機能"
+    }
+  ],
+  "supported_payment_methods": [
+    "credit_card",
+    "paypal",
+    "apple_pay"
+  ],
+  "supported_regions": ["US", "CA", "JP"]
+}</code></pre>
+
+        <h3 class="section-subtitle">アーキテクチャの柔軟性</h3>
+        <div class="card">
+          <div class="card-body">
+            <p>UCPは単一のプロトコルではなく、3つの実装方式を提供しています。</p>
+            <ul>
+              <li><strong>REST API実装:</strong> 従来型のHTTP APIとして実装。既存システムとの統合が容易。</li>
+              <li><strong>MCP実装:</strong> MCPサーバーとして実装。LLMアプリケーションとの統合に最適。</li>
+              <li><strong>A2A実装:</strong> Agent Cardとして実装。エージェント間連携に最適。</li>
+            </ul>
+            <p>事業者は自社のシステム構成とニーズに応じて、1つまたは複数の方式を選択できます。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">導入統計</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">5社</div>
+            <div class="stat-label">初期パートナー数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">2026/01</div>
+            <div class="stat-label">発表時期</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">急速拡大中</div>
+            <div class="stat-label">普及度</div>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">主要パートナー企業</h3>
+        <div class="card">
+          <div class="card-body">
+            <p><strong>ECプラットフォーム:</strong> Shopify、Etsy</p>
+            <p><strong>小売事業者:</strong> Wayfair、Target、Walmart</p>
+            <p><strong>備考:</strong> 2026年1月の発表直後から、大手EC・小売事業者が次々と採用を表明しており、エージェント型コマースの標準規格として急速に普及しています。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">公式リンク</h3>
+        <ul class="link-list">
+          <li><a href="https://ucp.dev" target="_blank">公式サイト: https://ucp.dev</a></li>
+          <li><a href="https://github.com/Universal-Commerce-Protocol/ucp" target="_blank">GitHub: https://github.com/Universal-Commerce-Protocol/ucp</a></li>
+          <li><a href="https://docs.ucp.dev" target="_blank">ドキュメント: https://docs.ucp.dev</a></li>
+        </ul>
+      </div>
+
+      <!-- Tab 5: Skills & AGENTS.md -->
+      <div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">
+
+        <!-- Agent Skills Section -->
+        <h2 class="section-title">Agent Skills</h2>
+
+        <div class="card">
+          <div class="card-header">概要</div>
+          <div class="card-body">
+            <p><strong>Agent Skills</strong>は、AIエージェントに新しい能力と専門知識を与えるオープンフォーマットです。Anthropicが2025年10月に発表し、現在はAAIF（Agentic AI Foundation）の傘下で管理されています。</p>
+            <p>スキルは、エージェントが学習・実行できるタスクや操作を標準化されたフォーマットで定義します。エージェントは必要に応じてスキルをロード・実行することで、能力を拡張できます。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">SKILL.md構造例</h3>
+        <pre><code>---
+name: pdf-skill
+description: PDFドキュメントの読み取り、フォーム入力、抽出を行うスキル
+version: 1.0.0
+author: Example Corp
+tags: [pdf, document, extraction]
+dependencies: []
+---
+
+# PDF Skill
+
+このスキルはPDFファイルの操作に特化しています。
+
+## 機能
+
+- PDFファイルの読み取り
+- テキスト抽出
+- フォーム入力
+- メタデータ取得
+
+## 使用例
+
+PDFファイルからテキストを抽出する場合:
+```
+extract_text_from_pdf("path/to/file.pdf")
+```
+
+## 前提条件
+
+- PyPDF2ライブラリがインストールされていること
+- Python 3.8以上</code></pre>
+
+        <h3 class="section-subtitle">ディレクトリ構造</h3>
+        <div class="card">
+          <div class="card-body">
+            <pre><code>my-skill/
+├── SKILL.md          # メインのスキル定義ファイル（必須）
+├── reference.md      # API仕様・リファレンス
+├── examples.md       # サンプルコード・ユースケース
+├── scripts/          # 実行可能なスクリプト
+│   ├── setup.sh
+│   └── main.py
+└── assets/           # 画像・設定ファイル等
+    └── config.json</code></pre>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">スキルの特徴</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">再利用可能</div>
+              <div class="card-body">
+                <p>一度定義すれば、複数のエージェント・プロジェクトで再利用できます。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">組み合わせ可能</div>
+              <div class="card-body">
+                <p>複数のスキルを組み合わせて、より複雑なタスクを実行できます。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">バージョン管理</div>
+              <div class="card-body">
+                <p>スキルはバージョン管理され、依存関係も明示的に定義できます。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">コミュニティ駆動</div>
+              <div class="card-body">
+                <p>オープンソースとして公開され、コミュニティが継続的に改善します。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">主要パートナー企業</h3>
+        <div class="card">
+          <div class="card-body">
+            <p><strong>SaaS・プラットフォーム:</strong> Canva、Stripe、Notion、Zapier、Microsoft、OpenAI</p>
+            <p><strong>開発ツール:</strong> Atlassian、Figma、Cursor、GitHub</p>
+            <p><strong>備考:</strong> 多くの企業が自社サービス向けのスキルを公開し、エージェント・エコシステムの拡大に貢献しています。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">公式リンク</h3>
+        <ul class="link-list">
+          <li><a href="https://agentskills.io" target="_blank">公式サイト: https://agentskills.io</a></li>
+          <li><a href="https://github.com/anthropics/skills" target="_blank">GitHub: https://github.com/anthropics/skills</a></li>
+        </ul>
+
+        <hr class="my-5">
+
+        <!-- AGENTS.md Section -->
+        <h2 class="section-title">AGENTS.md</h2>
+
+        <div class="card">
+          <div class="card-header">概要</div>
+          <div class="card-body">
+            <p><strong>AGENTS.md</strong>は、コーディングエージェント向けのREADMEです。OpenAIが2025年8月に提唱し、現在はAAIF（Agentic AI Foundation）の傘下で管理されています。</p>
+            <p>AGENTS.mdは、AIコーディングエージェントがプロジェクトで作業するためのコンテキストと指示を提供する標準化された場所として機能します。人間の開発者にとってのREADME.mdと同様の役割を果たします。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">AGENTS.md例</h3>
+        <pre><code># Project Overview
+
+このプロジェクトはTurboRepoベースのモノレポです。
+複数のアプリケーションとライブラリを含んでいます。
+
+## Project Structure
+
+- `apps/web` - Next.jsフロントエンドアプリケーション
+- `apps/api` - Express.jsバックエンドAPI
+- `packages/ui` - 共有UIコンポーネントライブラリ
+- `packages/config` - 共有設定ファイル
+
+## Build & Test
+
+プロジェクト全体をビルド:
+```
+pnpm turbo run build
+```
+
+特定のプロジェクトをテスト:
+```
+pnpm turbo run test --filter <project_name>
+```
+
+## Code Style & Conventions
+
+- インデント: 2スペース
+- 命名規則: camelCase（変数・関数）、PascalCase（クラス・コンポーネント）
+- コミットメッセージ: Conventional Commits形式
+- テスト: Jestを使用、カバレッジ80%以上を維持
+
+## Development Workflow
+
+1. `main`ブランチから新しいブランチを作成
+2. 機能を実装
+3. テストを書く
+4. PRを作成し、レビューを待つ
+5. 承認後にマージ
+
+## Dependencies
+
+- Node.js 18以上
+- pnpm 8以上
+
+## Environment Variables
+
+`.env.example`を参照してください。</code></pre>
+
+        <h3 class="section-subtitle">配置場所</h3>
+        <div class="card">
+          <div class="card-body">
+            <ul>
+              <li><strong>プロジェクトルート:</strong> <code>/AGENTS.md</code> - プロジェクト全体の概要と基本情報</li>
+              <li><strong>サブプロジェクト:</strong> <code>/apps/web/AGENTS.md</code> - 個別のアプリケーション固有の情報</li>
+              <li><strong>ライブラリ:</strong> <code>/packages/ui/AGENTS.md</code> - ライブラリの使用方法と開発ガイド</li>
+            </ul>
+            <p>階層的な配置により、エージェントは必要な粒度でコンテキストを取得できます。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">導入統計</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">60,000+</div>
+            <div class="stat-label">採用プロジェクト数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">2025/08</div>
+            <div class="stat-label">提唱時期</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">非常に高い</div>
+            <div class="stat-label">普及度</div>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">AGENTS.mdの特徴</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">シンプル</div>
+              <div class="card-body">
+                <p>Markdownファイルなので、追加のツールやライブラリは不要です。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">Git管理可能</div>
+              <div class="card-body">
+                <p>通常のソースコードと同様にバージョン管理できます。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">人間も読める</div>
+              <div class="card-body">
+                <p>エージェントだけでなく、人間の開発者にとっても有用な情報源です。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">広範な採用</div>
+              <div class="card-body">
+                <p>60,000以上のオープンソースプロジェクトで既に採用されています。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">公式リンク</h3>
+        <ul class="link-list">
+          <li><a href="https://agents.md" target="_blank">公式サイト: https://agents.md</a></li>
+          <li><a href="https://github.com/agentsmd/agents.md" target="_blank">GitHub: https://github.com/agentsmd/agents.md</a></li>
+        </ul>
+      </div>
+
+      <!-- Tab 6: Ecosystem -->
+      <div class="tab-pane fade" id="ecosystem" role="tabpanel" aria-labelledby="ecosystem-tab">
+        <h2 class="section-title">エコシステムと将来展望</h2>
+
+        <h3 class="section-subtitle">Agentic AI Foundation (AAIF)</h3>
+        <div class="card">
+          <div class="card-header">組織概要</div>
+          <div class="card-body">
+            <p><strong>設立:</strong> 2025年12月</p>
+            <p><strong>母体:</strong> Linux Foundation</p>
+            <p><strong>使命:</strong> エージェントAI技術のオープンスタンダード化とエコシステム構築</p>
+            <p><strong>主要プロジェクト:</strong></p>
+            <ul>
+              <li>MCP (Model Context Protocol) - Anthropic寄贈</li>
+              <li>AGENTS.md - OpenAI寄贈</li>
+              <li>goose - Block寄贈</li>
+              <li>Agent Skills - Anthropic寄贈</li>
+            </ul>
+            <p><strong>サポーター企業:</strong> Microsoft、AWS、Cloudflare、Bloomberg、その他多数</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">プロトコル間の関係性</h3>
+        <div class="card">
+          <div class="card-body">
+            <h4>MCP + A2A = 完全なエージェントシステム</h4>
+            <p>MCPとA2Aは相補的な関係にあります。</p>
+            <ul>
+              <li><strong>MCP (手):</strong> エージェントがツール、データ、APIを使えるようにする</li>
+              <li><strong>A2A (声):</strong> エージェント同士がコミュニケーションできるようにする</li>
+            </ul>
+            <p>両者を組み合わせることで、ツールを使いこなし、他のエージェントと協働できる完全なエージェントシステムを構築できます。</p>
+
+            <h4>ACP → A2A統合</h4>
+            <p>IBM BeeAIが開発したACPは、2025年9月にA2Aチームとの統合を発表しました。エージェント通信プロトコルの分断を避け、業界全体の相互運用性を高めるための決定です。ACPの技術的貢献はA2Aに統合され、独立したプロトコルとしての役割は終了しています。</p>
+
+            <h4>Agent Skills + MCP</h4>
+            <p>Agent SkillsとMCPは異なる目的を持ちながら、互いに補完し合います。</p>
+            <ul>
+              <li><strong>Agent Skills:</strong> エージェントに「知識」を提供（タスクの実行方法を定義）</li>
+              <li><strong>MCP:</strong> エージェントに「手」を提供（実際のツール実行を可能にする）</li>
+            </ul>
+            <p>スキルがタスクの手順を定義し、MCPが実際のツール実行を担当する形で連携します。</p>
+
+            <h4>UCP: 領域特化型統合</h4>
+            <p>UCPはコマース領域に特化しながら、REST API、MCP、A2Aのいずれとも統合できる柔軟な設計です。既存のECインフラを活用しつつ、エージェント対応を実現できます。</p>
+
+            <h4>AGENTS.md: 独立した規約</h4>
+            <p>AGENTS.mdは他のプロトコルとは独立した規約です。プロジェクトのコンテキストをエージェントに提供する標準的な方法として機能します。</p>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">2026年の展望</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">1. 標準化の加速</div>
+              <div class="card-body">
+                <p>AAIFの設立により、オープンスタンダードの策定と普及が加速します。業界横断的な合意形成が進み、相互運用性が向上します。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">2. プロトコル統合</div>
+              <div class="card-body">
+                <p>ACP→A2A統合のように、類似プロトコルの統合が進みます。分断を避け、開発者の負担を軽減する動きが続きます。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">3. 役割分担の明確化</div>
+              <div class="card-body">
+                <p>MCP（ツール統合）、A2A（エージェント通信）、Agent Skills（能力拡張）、AGENTS.md（コンテキスト提供）という役割分担が明確になり、各プロトコルが適切な領域で発展します。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">4. エンタープライズ採用の拡大</div>
+              <div class="card-body">
+                <p>大手コンサルティング企業（Accenture、BCG、Deloitte、McKinsey、PwC）の参画により、エンタープライズ領域での採用が加速します。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">5. 開発者エコシステムの成長</div>
+              <div class="card-body">
+                <p>MCPの97M月間DL、AGENTS.mdの60K+プロジェクト採用など、開発者コミュニティが急速に拡大しています。ツール、ライブラリ、スキルの共有が活発化します。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">6. 領域特化型プロトコルの登場</div>
+              <div class="card-body">
+                <p>UCPに続き、金融、医療、製造など他の業界でも領域特化型プロトコルが登場する可能性があります。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-subtitle">エコシステムの構造</h3>
+        <div class="protocol-diagram">
+          <div style="margin-bottom: 2rem;">
+            <div style="background: var(--corp); color: white; padding: 1rem; border-radius: 8px; font-weight: 700; margin-bottom: 1rem;">
+              Agentic AI Foundation (Linux Foundation)
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="background: linear-gradient(135deg, var(--corp-light), var(--corp)); color: white; padding: 1rem; border-radius: 8px; font-weight: 600;">
+              MCP<br>
+              <span style="font-size: 0.85rem; font-weight: 400;">ツール統合</span>
+            </div>
+            <div style="background: linear-gradient(135deg, #48bb78, #38a169); color: white; padding: 1rem; border-radius: 8px; font-weight: 600;">
+              Agent Skills<br>
+              <span style="font-size: 0.85rem; font-weight: 400;">能力拡張</span>
+            </div>
+            <div style="background: linear-gradient(135deg, #ed8936, #dd6b20); color: white; padding: 1rem; border-radius: 8px; font-weight: 600;">
+              AGENTS.md<br>
+              <span style="font-size: 0.85rem; font-weight: 400;">コンテキスト提供</span>
+            </div>
+            <div style="background: linear-gradient(135deg, #4299e1, #3182ce); color: white; padding: 1rem; border-radius: 8px; font-weight: 600;">
+              goose<br>
+              <span style="font-size: 0.85rem; font-weight: 400;">開発ツール</span>
+            </div>
+          </div>
+          <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #ddd;">
+            <div style="margin-bottom: 1rem; font-weight: 700; color: var(--corp-dark);">
+              パートナープロトコル
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+              <div style="background: white; border: 2px solid var(--corp-light); padding: 1rem; border-radius: 8px; font-weight: 600; color: var(--corp);">
+                A2A<br>
+                <span style="font-size: 0.85rem; font-weight: 400; color: #666;">エージェント通信</span>
+              </div>
+              <div style="background: white; border: 2px solid #9f7aea; padding: 1rem; border-radius: 8px; font-weight: 600; color: #805ad5;">
+                UCP<br>
+                <span style="font-size: 0.85rem; font-weight: 400; color: #666;">コマース特化</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box" style="margin-top: 2rem;">
+          <strong>エコシステムの健全性:</strong> AAIFの設立により、オープンガバナンスとベンダー中立性が担保されています。単一企業による支配を避け、コミュニティ全体の利益を優先する体制が整っています。
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-section">
+    <div class="container mt-4 mb-3">
+      <div class="text-center small text-muted py-3">
+        <p class="mb-1">AI News Daily Deck - リファレンスドキュメント | 最終更新: 2026-02-12</p>
+        <p class="mb-0">本ページの情報は公開ドキュメントに基づいています。最新情報は各プロトコルの公式サイトをご確認ください。</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

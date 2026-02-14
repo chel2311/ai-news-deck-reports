@@ -95,10 +95,10 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div class="container">
   <div class="d-flex align-items-center gap-3 mb-2">
     <h1 class="mb-0">AI News Daily Deck</h1>
-    <span class="badge-ver">v1.0</span>
+    <span class="badge-ver">v1.1</span>
   </div>
   <div class="subtitle">設計仕様書・要件定義書</div>
-  <div class="subtitle mt-2">作成日: 2026-02-10 | ドキュメントID: ANDD-SPEC-001</div>
+  <div class="subtitle mt-2">作成日: 2026-02-10 | 更新日: 2026-02-14 | ドキュメントID: ANDD-SPEC-001</div>
 </div>
 </div>
 
@@ -132,7 +132,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><th style="width:160px">目的</th><td>AI御三家（OpenAI, Anthropic, Google）+ Microsoft, Metaを中心に、日本市場の動向・考察を含む日次レポートを自動生成</td></tr>
 <tr><th>対象ユーザー</th><td>AI業界動向を追う経営層・技術責任者</td></tr>
 <tr><th>出力形式</th><td>HTML（メイン、スマホ対応）、PPTX（サブ）、Notion（データベース形式）</td></tr>
-<tr><th>実行頻度</th><td>毎日1回（07:00 JST、cron自動実行）</td></tr>
+<tr><th>実行頻度</th><td>毎日1回（05:00 JST、cron自動実行）</td></tr>
 <tr><th>運用コスト</th><td>サブスク範囲内（Claude Code Pro + 無料API枠）</td></tr>
 </table>
 </div>
@@ -157,13 +157,13 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <table class="table table-bordered spec-table">
 <thead><tr><th>ID</th><th>要件</th><th>優先度</th><th>実装状態</th></tr></thead>
 <tbody>
-<tr><td><span class="req-id">FR-10</span></td><td>HTMLレポート: Bootstrap 5ベース、タブUI（6セクション）、4段階レスポンシブ対応（モバイル/タブレット/PC/ワイドPC）。コンテナ幅96%流動レイアウト、タブ横スクロール、テーブル横スクロール</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-10</span></td><td>HTMLレポート: Bootstrap 5ベース、タブUI（6セクション）、4段階レスポンシブ対応（モバイル/タブレット/PC/ワイドPC）。コンテナ幅96%流動レイアウト、タブ横スクロール、テーブル横スクロール。ヘッダー直下にポッドキャストプレーヤー（MP3存在時のみ表示、preload=none）</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-11</span></td><td>インタラクティブチャート: Plotly（企業別棒グラフ、カテゴリレーダー、ヒートマップ、ドーナツ、ツリーマップ、バブル）</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-12</span></td><td>記事ごとの図解レンダリング（比較表、フローステップ、メトリクス、賛否、バー、タイムライン）</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-13</span></td><td>PPTX v3.2: 7色パレット、テーブル（企業比較・プロトコル一覧）、フロー図形、2カラムレイアウト、diagram PNG埋込、2x2ダッシュボード。8-12枚構成</td><td class="req-priority-mid">中</td><td>完了</td></tr>
-<tr><td><span class="req-id">FR-15</span></td><td>AI業界標準規格/プロトコル一覧テーブル（HTML+PPTX）。config.pyマスターデータからキャッチアップ時に自動更新</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-14</span></td><td>AI主要プレイヤー比較シート（LLMプロバイダー5社 + コーディングツール5種 + ベンチマーク）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
-<tr><td><span class="req-id">FR-15</span></td><td>コンシューマー/エンタープライズ市場セグメンテーション表示</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-15</span></td><td>AI業界標準規格/プロトコル一覧テーブル（HTML+PPTX）。config.pyマスターデータからキャッチアップ時に自動更新</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-16</span></td><td>コンシューマー/エンタープライズ市場セグメンテーション表示</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 </tbody>
 </table>
 
@@ -173,7 +173,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tbody>
 <tr><td><span class="req-id">FR-20</span></td><td>GitHub Pagesへ自動push（HTMLレポート公開）</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-21</span></td><td>Notionデータベースへ自動投稿（プロパティ: 日付、企業、カテゴリ、件数、重要度、要約）</td><td class="req-priority-high">高</td><td>完了</td></tr>
-<tr><td><span class="req-id">FR-22</span></td><td>NotionへPPTXをDBプロパティ「PPTX」に添付・カバー画像アップロード（ギャラリービュー対応）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-22</span></td><td>NotionへPPTXをDBプロパティ「pptx」に添付・カバー画像アップロード（ギャラリービュー対応）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-23</span></td><td>GitHub PagesレポートURLをNotionプロパティに自動設定</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 </tbody>
 </table>
@@ -182,7 +182,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <table class="table table-bordered spec-table">
 <thead><tr><th>ID</th><th>要件</th><th>優先度</th><th>実装状態</th></tr></thead>
 <tbody>
-<tr><td><span class="req-id">FR-30</span></td><td>cron + <code>claude -p</code>による毎朝07:00 JST自動実行</td><td class="req-priority-high">高</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-30</span></td><td>cron + <code>claude -p</code>による毎朝05:00 JST自動実行</td><td class="req-priority-high">高</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-31</span></td><td>週次（毎週月曜）のAI比較データ自動更新（<code>claude -p</code> + WebSearch）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-32</span></td><td>ローカル出力ファイル7日自動削除・ログ30日自動削除</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-33</span></td><td>ニュース収集失敗時の前日データフォールバック</td><td class="req-priority-mid">中</td><td>完了</td></tr>
@@ -199,6 +199,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><span class="req-id">FR-44</span></td><td>Notion重複投稿防止: 同日ページ存在時に自動アーカイブしてから新規作成。property_map対応</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-45</span></td><td>news_raw.jsonをGitHub Pagesリポジトリにも保存。過去データの再生成を常に可能にする</td><td class="req-priority-low">低</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-46</span></td><td>Notion APIリトライ: 429/5xxレスポンス時にRetry-Afterを参照し最大2回リトライ。未使用_file_block()削除</td><td class="req-priority-low">低</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-47</span></td><td>AIポッドキャスト自動生成: Gemini CLI台本生成→バリデーション&自動修正→Gemini TTS API音声合成→MP3出力。2話者対話形式（約6分/7MB）。HTMLレポートにオーディオプレーヤー埋め込み。失敗時はプレーヤー非表示（graceful degradation）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 </tbody>
 </table>
 
@@ -226,6 +227,8 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td>Notion API</td><td>REST (v2022-06-28)</td><td>レポート投稿・ファイル添付</td><td>Bearer Token (env)</td><td>統合トークン</td></tr>
 <tr><td>GitHub Pages</td><td>git push</td><td>HTMLレポート公開</td><td>SSH Key / Git Credential</td><td>無制限</td></tr>
 <tr><td>Claude CLI</td><td><code>claude -p</code> (非対話)</td><td>ニュース収集・比較データ更新</td><td>Claude Code Proサブスク</td><td>サブスク内</td></tr>
+<tr><td>Gemini CLI</td><td>CLI (gemini)</td><td>ポッドキャスト台本生成</td><td>Google APIキー (env)</td><td>無料枠内</td></tr>
+<tr><td>Gemini TTS API</td><td>REST (v1beta)</td><td>ポッドキャスト音声合成</td><td>Google APIキー (env)</td><td>無料枠内</td></tr>
 </tbody>
 </table>
 
@@ -257,7 +260,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div class="arch-layer mb-3">
 <div class="layer-label">Trigger Layer</div>
 <div class="row g-2 justify-content-center">
-  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#9200;</span>cron<br><small>毎朝 07:00 JST</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#9200;</span>cron<br><small>毎朝 05:00 JST</small></div></div>
   <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128196;</span>run-daily.sh<br><small>オーケストレーター</small></div></div>
 </div>
 </div>
@@ -282,6 +285,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
   <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128196;</span>html_generator<br><small>Jinja2テンプレート</small></div></div>
   <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128218;</span>pptx_generator<br><small>python-pptx</small></div></div>
   <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128195;</span>notion_publisher<br><small>REST API投稿</small></div></div>
+  <div class="col-auto"><div class="arch-box highlight"><span class="box-icon">&#127911;</span>podcast_generator<br><small>Gemini CLI + TTS API</small></div></div>
 </div>
 </div>
 
@@ -289,7 +293,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div class="arch-layer">
 <div class="layer-label">Output Layer</div>
 <div class="row g-2 justify-content-center">
-  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#127760;</span>GitHub Pages<br><small>HTML公開</small></div></div>
+  <div class="col-auto"><div class="arch-box"><span class="box-icon">&#127760;</span>GitHub Pages<br><small>HTML + Podcast公開</small></div></div>
   <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128214;</span>Notion DB<br><small>構造化データ</small></div></div>
   <div class="col-auto"><div class="arch-box"><span class="box-icon">&#128193;</span>Local Output<br><small>7日間保持</small></div></div>
 </div>
@@ -308,6 +312,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td>HTMLテンプレート</td><td>Jinja2</td><td>Pythonエコシステム。autoescape対応</td><td>文字列連結（保守性低い）</td></tr>
 <tr><td>Notion投稿</td><td>REST API直接呼出し</td><td>MCP経由では細かい制御困難（ファイル添付、プロパティ設定）</td><td>Notion MCP（機能制限あり）</td></tr>
 <tr><td>デプロイ</td><td>GitHub Pages</td><td>無料、git pushで即反映。静的HTMLに最適</td><td>S3 + CloudFront（オーバーキル）</td></tr>
+<tr><td>ポッドキャスト音声</td><td>Gemini CLI + TTS API</td><td>無料枠内、2話者対話対応、日本語品質良好</td><td>OpenAI TTS API（有料）、Edge TTS（品質劣る）</td></tr>
 </tbody>
 </table>
 
@@ -512,7 +517,29 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
   <div class="df-node ext">Notion Database</div>
 </div>
 
-<h6 class="fw-bold mb-3 mt-4">3.3 比較データ更新フロー（週次）</h6>
+<h6 class="fw-bold mb-3 mt-4">3.3 ポッドキャスト生成フロー (Step 2.5)</h6>
+<div class="df-row">
+  <div class="df-node store">news_raw.json</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node ext">Gemini CLI</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">台本JSON (script.json)</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">バリデーション&自動修正</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node ext">Gemini TTS API</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node store">podcast/podcast.mp3</div>
+</div>
+<div class="df-row ms-3">
+  <div class="df-node store">podcast.mp3</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node">html_generator (再生成)</div>
+  <span class="df-arrow-r">&rarr;</span>
+  <div class="df-node store">index.html (プレーヤー埋込)</div>
+</div>
+
+<h6 class="fw-bold mb-3 mt-4">3.4 比較データ更新フロー（週次）</h6>
 <div class="df-row">
   <div class="df-node ext">WebSearch</div>
   <span class="df-arrow-r">&rarr;</span>
@@ -547,6 +574,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">chart_generator.py</span> <span class="comment"># matplotlib(PPTX用) + Plotly(HTML用) 6種チャート</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">pptx_generator.py</span> <span class="comment"># PPTX v3.2: 7色パレット, テーブル, フロー図形, プロトコル一覧</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">notion_publisher.py</span> <span class="comment"># Notion REST API, DB管理, ファイルアップロード</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">podcast_generator.py</span> <span class="comment"># AIポッドキャスト生成 (Gemini CLI台本 + TTS API音声合成)</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">diagram_generator.py</span> <span class="comment"># 全体図解生成</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">diagram_renderer.py</span> <span class="comment"># 記事別図解HTMLレンダリング</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">infographic_generator.py</span> <span class="comment"># 記事サイドバー/詳細ビジュアル, 競合ポジショニング, タイムライン</span>
@@ -565,7 +593,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">cron_setup.sh</span> <span class="comment"># cron登録ヘルパー</span>
 <br>&nbsp;&nbsp;<span class="dir">output/</span> <span class="comment"># 日付別出力 (7日保持)</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">YYYY-MM-DD/</span>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">index.html</span>, <span class="file">report_YYYY-MM-DD.pptx</span>, <span class="dir">charts/</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">index.html</span>, <span class="file">report_YYYY-MM-DD.pptx</span>, <span class="dir">charts/</span>, <span class="dir">podcast/</span>
 <br>&nbsp;&nbsp;<span class="dir">logs/</span> <span class="comment"># 実行ログ (30日保持)</span>
 <br>&nbsp;&nbsp;<span class="dir">docs/</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">specification.html</span> <span class="comment"># 本ドキュメント</span>
@@ -639,6 +667,24 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 </div>
 </div>
 
+<!-- podcast_generator.py -->
+<div class="accordion-item">
+<h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mod5">generators/podcast_generator.py - ポッドキャスト生成</button></h2>
+<div id="mod5" class="accordion-collapse collapse" data-bs-parent="#moduleAccordion">
+<div class="accordion-body">
+<table class="table table-sm spec-table">
+<tr><th style="width:140px">責務</th><td>ニュースJSONからAIポッドキャスト（2話者対話形式のMP3）を自動生成</td></tr>
+<tr><th>パイプライン</th><td>1. Gemini CLI台本生成（news_raw.json→対話形式JSON） → 2. バリデーション&自動修正 → 3. Gemini TTS API音声合成（チャンク分割、話者別音声） → 4. MP3出力</td></tr>
+<tr><th>出力</th><td><code>output/YYYY-MM-DD/podcast/podcast.mp3</code>（約7MB/6分）、<code>script.json</code>（台本）</td></tr>
+<tr><th>CLI</th><td><code>python3 -m generators.podcast_generator --date YYYY-MM-DD [--script-only]</code></td></tr>
+<tr><th>タイムアウト</th><td>Gemini CLI: 180秒、TTS API: 300秒×チャンク数 + リトライ待機</td></tr>
+<tr><th>エラー耐性</th><td>失敗時はWARNINGのみ。HTMLレポートにプレーヤーが表示されないだけ（graceful degradation）</td></tr>
+<tr><th>依存</th><td><code>GEMINI_API_KEY</code>環境変数必須。未設定時はStep 2.5をスキップ</td></tr>
+</table>
+</div>
+</div>
+</div>
+
 </div>
 
 </div>
@@ -647,7 +693,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div class="tab-pane fade" id="tab-workflow">
 
 <h2 class="section-title" id="wf-daily">1. デイリー実行ワークフロー</h2>
-<p><code>run-daily.sh</code> が実行する全7ステップ。</p>
+<p><code>run-daily.sh</code> が実行する全11ステップ（Step 0 / 0.5 / 1 / 1.5 / 1.7 / 2 / 2.5 / 3 / 4 / 5 / 6）。</p>
 
 <div class="card mb-4">
 <div class="card-header">run-daily.sh 実行フロー</div>
@@ -655,7 +701,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div class="wf-container">
 
   <div class="wf-step primary">
-    <div class="step-label">cron 07:00 JST</div>
+    <div class="step-label">cron 05:00 JST</div>
     <div class="step-desc">PATH設定, 環境変数読込, ログ初期化</div>
   </div>
   <div class="wf-arrow"></div>
@@ -696,9 +742,15 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
   </div>
   <div class="wf-arrow"></div>
 
+  <div class="wf-step accent" style="border-style:dashed">
+    <div class="step-label">Step 2.5: ポッドキャスト生成 (GEMINI_API_KEY設定時)</div>
+    <div class="step-desc">Gemini CLI台本生成 &rarr; バリデーション&自動修正 &rarr; Gemini TTS API音声合成<br>&rarr; podcast/podcast.mp3 (~7MB/6分) &rarr; HTML再生成（プレーヤー埋込）<br>失敗時: WARNINGのみ（レポートは生成済み）</div>
+  </div>
+  <div class="wf-arrow"></div>
+
   <div class="wf-step">
     <div class="step-label">Step 3: GitHub Pages push</div>
-    <div class="step-desc">git add (index.html, report_YYYY-MM-DD.pptx, charts/) &rarr; commit &rarr; push<br>失敗時: WARNINGログのみ（レポート生成は完了済み）</div>
+    <div class="step-desc">git add (index.html, report_YYYY-MM-DD.pptx, charts/, podcast/) &rarr; commit &rarr; push<br>失敗時: WARNINGログのみ（レポート生成は完了済み）</div>
   </div>
   <div class="wf-arrow"></div>
 
@@ -785,7 +837,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
   <div class="wf-arrow"></div>
 
   <div class="wf-step success">
-    <div class="step-label">出力: output/YYYY-MM-DD/ (index.html, report_YYYY-MM-DD.pptx, charts/)</div>
+    <div class="step-label">出力: output/YYYY-MM-DD/ (index.html, report_YYYY-MM-DD.pptx, charts/, podcast/)</div>
   </div>
 
 </div>
@@ -857,6 +909,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td>Step 2: HTML生成失敗</td><td>generation_errorsに記録</td><td>PPTX/Notion生成は続行</td></tr>
 <tr><td>Step 2: PPTX生成失敗</td><td>generation_errorsに記録</td><td>HTMLが成功していれば正常終了</td></tr>
 <tr><td>Step 2: Notion投稿失敗</td><td>WARNINGログ出力</td><td>HTML/PPTXが成功していれば正常終了</td></tr>
+<tr><td>Step 2.5: ポッドキャスト生成失敗</td><td>WARNINGログ出力</td><td>HTMLにプレーヤー非表示のみ（graceful degradation）</td></tr>
 <tr><td>Step 3: GitHub push失敗</td><td>WARNINGログ出力</td><td>ローカルにレポートは残る</td></tr>
 </tbody>
 </table>
@@ -885,7 +938,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div class="card mb-3">
 <div class="card-header">crontabエントリ</div>
 <div class="card-body">
-<pre class="mb-2" style="font-size:0.85rem;background:#f8f9fa;padding:12px;border-radius:6px"><code>0 7 * * * /root/claude-project/ai-news-deck/automation/run-daily.sh >> /root/claude-project/ai-news-deck/logs/cron.log 2>&1</code></pre>
+<pre class="mb-2" style="font-size:0.85rem;background:#f8f9fa;padding:12px;border-radius:6px"><code>0 5 * * * /root/claude-project/ai-news-deck/automation/run-daily.sh >> /root/claude-project/ai-news-deck/logs/cron.log 2>&1</code></pre>
 <p class="mb-0 text-muted" style="font-size:0.82rem">登録方法: <code>bash automation/cron_setup.sh</code> | 確認: <code>crontab -l | grep run-daily</code></p>
 </div>
 </div>
@@ -901,7 +954,8 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><strong>1</strong></td><td>毎日</td><td>ニュース収集。<code>claude -p</code>で直近24-48時間のAIニュースを検索・分析・JSON出力</td><td>claude -p (sonnet, $5.00上限)<br>Brave/Tavily MCP</td><td>前日の<code>news_raw.json</code>をコピーして続行 + Notionエラー通知</td></tr>
 <tr><td><strong>1.5</strong></td><td>毎日</td><td>Claude出力からJSON抽出。コードフェンス除去、JSONバリデーション</td><td>jq, Python (正規表現)</td><td>exit 1 + EXIT trap経由でNotionエラー通知</td></tr>
 <tr><td><strong>2</strong></td><td>毎日</td><td>レポート生成。<code>generate.py --json</code>でHTML + PPTX + Notion投稿</td><td>Python (generate.py)</td><td>exit 1 + EXIT trap経由でNotionエラー通知</td></tr>
-<tr><td><strong>3</strong></td><td>毎日</td><td>GitHub Pagesへpush。HTML + PPTX + chartsをコミット&プッシュ</td><td>git</td><td>WARNING + Notionエラー通知（レポートは残る）</td></tr>
+<tr><td><strong>2.5</strong></td><td>毎日 (GEMINI_API_KEY設定時)</td><td>ポッドキャスト生成。Gemini CLI台本→バリデーション→TTS API音声合成→MP3出力。成功時はHTML再生成（プレーヤー埋め込み）</td><td>Gemini CLI, Gemini TTS API, Python</td><td>WARNING（レポートは生成済み、プレーヤー非表示）</td></tr>
+<tr><td><strong>3</strong></td><td>毎日</td><td>GitHub Pagesへpush。HTML + PPTX + charts + podcastをコミット&プッシュ</td><td>git</td><td>WARNING + Notionエラー通知（レポートは残る）</td></tr>
 <tr><td><strong>4</strong></td><td>毎日</td><td>結果確認。HTML/PPTXファイル存在チェック、ログ出力</td><td>bash</td><td>-</td></tr>
 <tr><td><strong>5</strong></td><td>毎日</td><td>出力クリーンアップ。7日以上前の<code>output/YYYY-MM-DD/</code>を削除</td><td>bash (date計算)</td><td>スキップ（次回に再試行）</td></tr>
 <tr><td><strong>6</strong></td><td>毎日</td><td>ログクリーンアップ。30日以上前の<code>*.log</code>を削除</td><td>find -mtime</td><td>スキップ</td></tr>
@@ -957,6 +1011,7 @@ service cron status</code></pre>
 <tbody>
 <tr><td><code>NOTION_TOKEN</code></td><td>Notion API認証</td><td>run-daily.sh (export)</td></tr>
 <tr><td><code>NOTION_WORKSPACE_PAGE_ID</code></td><td>Notionワークスペースページ</td><td>run-daily.sh (export)</td></tr>
+<tr><td><code>GEMINI_API_KEY</code></td><td>ポッドキャスト生成（Gemini CLI台本 + TTS API音声合成）</td><td>run-daily.sh (export) / 環境変数</td></tr>
 <tr><td>Brave Search APIキー</td><td>ニュース検索</td><td>~/.claude.json (MCP設定)</td></tr>
 <tr><td>Tavily APIキー</td><td>記事詳細抽出</td><td>~/.claude.json (MCP設定)</td></tr>
 <tr><td>GitHub SSH Key</td><td>git push認証</td><td>~/.ssh/</td></tr>
@@ -972,6 +1027,7 @@ service cron status</code></pre>
 <tr><td>Tavily</td><td>~120回/月 (4回/日 x 30日)</td><td>1,000回/月</td><td>$0</td></tr>
 <tr><td>GitHub Pages</td><td>~900MB/月 (30日 x ~30MB)</td><td>1GB</td><td>$0</td></tr>
 <tr><td>Notion API</td><td>~30ページ/月</td><td>統合トークン無制限</td><td>$0</td></tr>
+<tr><td>Gemini TTS API</td><td>~30回/月 (1回/日 x 30日)</td><td>無料枠内</td><td>$0</td></tr>
 <tr style="font-weight:700;background:#E8F5E9"><td>合計</td><td colspan="2"></td><td>$0/月</td></tr>
 </tbody>
 </table>
@@ -1030,7 +1086,7 @@ bash automation/run-daily.sh</code></pre>
 <!-- Footer -->
 <div class="border-top mt-5 py-4" style="background:#fff">
 <div class="container text-center text-muted" style="font-size:0.82rem">
-  AI News Daily Deck - 設計仕様書・要件定義書 | Version 1.0 | 2026-02-10
+  AI News Daily Deck - 設計仕様書・要件定義書 | Version 1.1 | 2026-02-14
 </div>
 </div>
 

@@ -199,7 +199,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <tr><td><span class="req-id">FR-44</span></td><td>Notion重複投稿防止: 同日ページ存在時に自動アーカイブしてから新規作成。property_map対応</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-45</span></td><td>news_raw.jsonをGitHub Pagesリポジトリにも保存。過去データの再生成を常に可能にする</td><td class="req-priority-low">低</td><td>完了</td></tr>
 <tr><td><span class="req-id">FR-46</span></td><td>Notion APIリトライ: 429/5xxレスポンス時にRetry-Afterを参照し最大2回リトライ。未使用_file_block()削除</td><td class="req-priority-low">低</td><td>完了</td></tr>
-<tr><td><span class="req-id">FR-47</span></td><td>AIポッドキャスト自動生成: Gemini CLI台本生成→バリデーション&自動修正→Gemini TTS API音声合成→MP3出力。2話者対話形式（約6分/7MB）。HTMLレポートにオーディオプレーヤー埋め込み。失敗時はプレーヤー非表示（graceful degradation）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
+<tr><td><span class="req-id">FR-47</span></td><td>AIポッドキャスト自動生成: Gemini CLI台本生成→バリデーション&自動修正→発言数不足時自動拡張→TTS前処理（数字読み仮名・難読漢字・英略語変換）→Gemini TTS API音声合成→MP3出力。2話者対話形式（約8-10分/10MB）。ボイス: Sadaltager（男性）/Erinome（女性）。HTMLレポートにオーディオプレーヤー埋め込み。失敗時はプレーヤー非表示（graceful degradation）</td><td class="req-priority-mid">中</td><td>完了</td></tr>
 </tbody>
 </table>
 
@@ -674,8 +674,8 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 <div class="accordion-body">
 <table class="table table-sm spec-table">
 <tr><th style="width:140px">責務</th><td>ニュースJSONからAIポッドキャスト（2話者対話形式のMP3）を自動生成</td></tr>
-<tr><th>パイプライン</th><td>1. Gemini CLI台本生成（news_raw.json→対話形式JSON） → 2. バリデーション&自動修正 → 3. Gemini TTS API音声合成（チャンク分割、話者別音声） → 4. MP3出力</td></tr>
-<tr><th>出力</th><td><code>output/YYYY-MM-DD/podcast/podcast.mp3</code>（約7MB/6分）、<code>script.json</code>（台本）</td></tr>
+<tr><th>パイプライン</th><td>1. Gemini CLI台本生成（gemini-3-flash-preview、news_raw.json→対話形式JSON） → 2. バリデーション&自動修正 → 3. 発言数不足時自動拡張（120発言未満で再生成） → 4. TTS前処理（数字読み仮名・難読漢字・英略語カタカナ変換） → 5. Gemini TTS API音声合成（gemini-2.5-flash-preview-tts、チャンク分割、話者別音声: Sadaltager/Erinome） → 6. MP3出力</td></tr>
+<tr><th>出力</th><td><code>output/YYYY-MM-DD/podcast/podcast.mp3</code>（約10MB/8-10分）、<code>script.json</code>（台本）</td></tr>
 <tr><th>CLI</th><td><code>python3 -m generators.podcast_generator --date YYYY-MM-DD [--script-only]</code></td></tr>
 <tr><th>タイムアウト</th><td>Gemini CLI: 180秒、TTS API: 300秒×チャンク数 + リトライ待機</td></tr>
 <tr><th>エラー耐性</th><td>失敗時はWARNINGのみ。HTMLレポートにプレーヤーが表示されないだけ（graceful degradation）</td></tr>
@@ -744,7 +744,7 @@ code { background: #EEF2F7; color: var(--corp-dark); padding: 1px 5px; border-ra
 
   <div class="wf-step accent" style="border-style:dashed">
     <div class="step-label">Step 2.5: ポッドキャスト生成 (GEMINI_API_KEY設定時)</div>
-    <div class="step-desc">Gemini CLI台本生成 &rarr; バリデーション&自動修正 &rarr; Gemini TTS API音声合成<br>&rarr; podcast/podcast.mp3 (~7MB/6分) &rarr; HTML再生成（プレーヤー埋込）<br>失敗時: WARNINGのみ（レポートは生成済み）</div>
+    <div class="step-desc">Gemini CLI台本生成 &rarr; バリデーション&自動修正 &rarr; 自動拡張（不足時）&rarr; TTS前処理 &rarr; Gemini TTS API音声合成<br>&rarr; podcast/podcast.mp3 (~10MB/8-10分) &rarr; HTML再生成（プレーヤー埋込）<br>失敗時: WARNINGのみ（レポートは生成済み）</div>
   </div>
   <div class="wf-arrow"></div>
 
